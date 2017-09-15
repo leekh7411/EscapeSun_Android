@@ -10,7 +10,12 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.SEND_SMS" />
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -44,9 +49,15 @@
         <activity
             android:name=".LocationSettingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
-        <activity android:name=".CallList.CallListActivity"
-                   android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"></activity>
-        <service android:name=".Service.MainService"></service>
+        <activity
+            android:name=".CallList.CallListActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
+
+        <service android:name=".Service.MainService" />
+
+        <activity android:name=".CallList.AddCallListActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
+            ></activity>
     </application>
 
 </manifest>

@@ -1,9 +1,8 @@
 package com.example.leekwangho.escapesunapp.CallList;
-
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.ListViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +13,8 @@ import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.example.leekwangho.escapesunapp.Database.MainDBHelper;
 import com.example.leekwangho.escapesunapp.R;
-
 import java.util.ArrayList;
 
 public class CallListActivity extends AppCompatActivity {
@@ -25,15 +22,14 @@ public class CallListActivity extends AppCompatActivity {
     private Button addListBTN;
     private Button exitBTN;
     private ListView callList;
-    private CallListAdapter adapter;
+    private CallListAdapter adapter = null;
     private final String TAG = "CallListActivity";
+    private final int ADD_CALL_LIST = 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call_list);
         mainDBHelper = new MainDBHelper(getApplicationContext());
-        mainDBHelper.__callList__insert_new_list("LeeKwangHo","01094118874");
-
         callList = (ListView)findViewById(R.id.callList);
         adapter = new CallListAdapter();
         adapter.callListItems = mainDBHelper.__callList_get_all_data_ArrayList();
@@ -43,13 +39,10 @@ public class CallListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 CallListItem item = adapter.getItem(i);
                 if (item != null) {
-                    Log.d(TAG,"CallList Click -> Name: " + item.getName() + " , Phone : " + item.getPhone_number());
+                    Log.d(TAG,"Click -> Name: " + item.getName() + " , Phone : " + item.getPhone_number());
                 }
             }
         });
-
-        // for testing
-        //for(int i = 0 ; i < 10 ; i++)adapter.addItem("Kwangho - " + i,"01094118874");
 
         addListBTN = (Button)findViewById(R.id.call_list_add);
         addListBTN.setOnClickListener(new View.OnClickListener() {
@@ -67,10 +60,35 @@ public class CallListActivity extends AppCompatActivity {
             }
         });
     }
-    private void addListItem(){
-        // show Dialog
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(adapter!=null)adapter.notifyDataSetChanged();
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if(adapter!=null)adapter.notifyDataSetChanged();
+    }
+
+    private void addListItem(){
+        Intent intent = new Intent(getApplicationContext(),AddCallListActivity.class);
+        startActivityForResult(intent,ADD_CALL_LIST);
+        overridePendingTransition(R.anim.translate_right_in,R.anim.translate_left_out);
+        finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == ADD_CALL_LIST){
+            Log.d(TAG,"Activity Result Code : " + ADD_CALL_LIST);
+            if(adapter!=null)adapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -108,7 +126,6 @@ public class CallListActivity extends AppCompatActivity {
         public CallListItem getItem(int i) {
             return callListItems.get(i);
         }
-
         @Override
         public long getItemId(int i) {
             return 0;
