@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <Button
+        android:id="@+id/read_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/read_state" />
+    <Button
+        android:id="@+id/turn_off_led"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/turn_off_led" />
+    <Button
+        android:id="@+id/turn_on_led"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/turn_on_led" />
+</LinearLayout>

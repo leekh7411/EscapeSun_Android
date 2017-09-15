@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    android:weightSum="1"
+    tools:context="com.example.leekwangho.escapesunapp.DataReadActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="20dp"
+            android:text="태.피.하.조.아"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/doRefreshBTN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="0.1"
+            android:background="@color/colorPrimary"
+            android:padding="5dp"
+            android:src="@drawable/ic_refresh" />
+
+        <ImageButton
+            android:id="@+id/callListBTN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="0.1"
+            android:background="@color/colorPrimary"
+            android:padding="5dp"
+            android:src="@drawable/emergency_list" />
+
+        <ImageButton
+            android:id="@+id/manageBleBTN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="0.1"
+            android:background="@color/colorPrimary"
+            android:padding="5dp"
+            android:src="@drawable/ble_icon" />
+
+    </LinearLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/colorMyCpText">
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".NestedScrollViewActivity">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+                <requestFocus
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="3dp"
+                    android:background="@android:color/background_light"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/valueTitle_Temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="외부 온도"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
+
+                    <ImageButton
+                        android:id="@+id/value_imageBTN_Temperature"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/ic_menu_gallery" />
+
+                    <TextView
+                        android:id="@+id/sensor_value_Temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="loading..."
+                        android:textColor="@color/colorMyStamps"
+                        android:textSize="36sp" />
+
+                    <TextView
+                        android:id="@+id/value_description_Temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:text="바깥 온도는 활활 불타고 있다. 지금 나가면 살아남을 수 있을까?"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="3dp"
+                    android:background="@android:color/background_light"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/valueTitle_BodyTemp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="체온"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
+
+                    <ImageButton
+                        android:id="@+id/value_imageBTN_BodyTemp"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/ic_menu_gallery" />
+
+                    <TextView
+                        android:id="@+id/sensor_value_BodyTemp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="loading..."
+                        android:textColor="@color/colorMyStamps"
+                        android:textSize="36sp" />
+
+                    <TextView
+                        android:id="@+id/value_description_BodyTemp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:text="라그나로스 그 자체"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="3dp"
+                android:background="@android:color/background_light"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/valueTitle_HeartRate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="심박 정보"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
+
+                    <ImageButton
+                        android:id="@+id/value_imageBTN_HeartRate"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/ic_menu_gallery" />
+
+                    <TextView
+                        android:id="@+id/sensor_value_HeartRate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="loading..."
+                        android:textColor="@color/colorMyStamps"
+                        android:textSize="36sp" />
+
+                    <TextView
+                        android:id="@+id/value_description_HeartRate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:text="(두근두근)싸늘하다.. 가슴에 비수가 날아와 꼳힌다. 정마담에게 한장.. 아귀에게 한장.."
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp" />
+
+            </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="3dp"
+                    android:background="@android:color/background_light"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/valueTitle_Humidity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="습도"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
+
+                    <ImageButton
+                        android:id="@+id/value_imageBTN_Humidity"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/ic_menu_gallery" />
+
+                    <TextView
+                        android:id="@+id/sensor_value_Humidity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="loading..."
+                        android:textColor="@color/colorMyStamps"
+                        android:textSize="36sp" />
+
+                    <TextView
+                        android:id="@+id/value_description_Humidity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:text="습..하..습...하"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+
+    </android.support.v4.widget.NestedScrollView>
+</android.widget.LinearLayout>
+

@@ -1,0 +1,86 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom"
+    android:background="@android:color/background_light"
+    android:gravity="center_horizontal|center"
+    android:orientation="vertical"
+    android:weightSum="1"
+    tools:context=".LogoActivity">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2" />
+
+    <TextView
+        android:id="@+id/LocationText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="0dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="당신의 위치정보가 필요해요"
+        android:textColor="@android:color/black"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/LocationText2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="수집된 정보는 위급 상황 시 문자 메시지에만 활용 됩니다"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/location_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_weight="0.7"
+        app:srcCompat="@drawable/ic_location_vec" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/SetLocationBTN"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@android:color/background_light"
+            android:padding="10dp"
+            android:text="GPS 설정하기"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/LocationNextBTN"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@android:color/background_light"
+            android:padding="10dp"
+            android:text="넘어가기"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_menu_01"
+            android:icon="@drawable/ble_icon"
+            android:title="@string/nav_menu_01" />
+        <item
+            android:id="@+id/nav_menu_02"
+            android:icon="@drawable/sensor_data_icon"
+            android:title="@string/nav_menu_02" />
+        <item
+            android:id="@+id/nav_menu_03"
+            android:icon="@drawable/emergency_list"
+            android:title="@string/nav_menu_03" />
+        <item
+            android:id="@+id/nav_menu_04"
+            android:icon="@drawable/setting_icon"
+            android:title="@string/nav_menu_04" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/share_icon"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/send_icon"
+                android:title="Send" />
+        </menu>
+    </item>
+
+</menu>

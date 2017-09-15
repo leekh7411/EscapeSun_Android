@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorMyCpText"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_weight="1"
+        android:background="@color/colorMyCpText"
+        android:orientation="vertical"
+        android:paddingBottom="1dp"
+        android:paddingTop="1dp"
+        android:weightSum="5">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingBottom="1dp">
+
+            <TextView
+                android:id="@+id/temperature_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="@android:color/background_light"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="Temperature "
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingBottom="1dp">
+
+            <TextView
+                android:id="@+id/bodyheat_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_weight="2"
+                android:background="@android:color/background_light"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="Body Heat"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingBottom="1dp">
+
+            <TextView
+                android:id="@+id/heart_rate_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_weight="2"
+                android:background="@android:color/background_light"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="Heart Rate"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingBottom="1dp">
+
+            <TextView
+                android:id="@+id/humidity_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_weight="2"
+                android:background="@android:color/background_light"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="Humidity "
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingBottom="1dp">
+
+            <TextView
+                android:id="@+id/gyroscope_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_weight="2"
+                android:background="@android:color/background_light"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="Gyroscope"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/mainText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:layout_weight="0"
+        android:background="@android:color/background_light"
+        android:padding="15dp"
+        android:text="Device Status"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="horizontal"
+        android:paddingBottom="1dp"
+        android:paddingTop="1dp">
+
+        <ImageButton
+            android:id="@+id/mainRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:padding="10dp"
+            app:srcCompat="@drawable/ic_refresh" />
+
+        <Button
+            android:id="@+id/mainOn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="0dp"
+            android:background="@android:color/background_light"
+            android:text="ON" />
+
+        <Button
+            android:id="@+id/mainOff"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="0dp"
+            android:background="@android:color/background_light"
+            android:text="OFF" />
+
+        <Button
+            android:id="@+id/mainReadBTN"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@android:color/background_light"
+            android:text="Read" />
+    </LinearLayout>
+
+</LinearLayout>
