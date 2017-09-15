@@ -7,7 +7,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +20,7 @@ public class DataReadActivity extends Activity {
     private TextView title;
     public static TextView temperature,body_temp,heart_rate,humidity;
     private ImageButton callListBTN,bleBTN,refreshBTN;
+    private Switch alarm_distance,alarm_heart_rate,alarm_heat,alarm_humidity;
     public static boolean IsActivityRun = false;
     @Override
     protected void onResume() {
@@ -82,7 +85,58 @@ public class DataReadActivity extends Activity {
         startMainService();
         //Reading AsyncTask Start
         //startReadingTask();
+
+        // Switch
+        switchInit();
     }
+    private void switchInit(){
+        alarm_distance = (Switch)findViewById(R.id.alarm_distance_switch);
+        alarm_distance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    Toast.makeText(getApplicationContext(),"ON",Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        alarm_heart_rate = (Switch)findViewById(R.id.alarm_heart_rate_switch);
+        alarm_heart_rate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    Toast.makeText(getApplicationContext(),"ON",Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        alarm_heat = (Switch)findViewById(R.id.alarm_heat_switch);
+        alarm_heat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    Toast.makeText(getApplicationContext(),"ON",Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        alarm_humidity = (Switch)findViewById(R.id.alarm_humidity_switch);
+        alarm_humidity.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    Toast.makeText(getApplicationContext(),"ON",Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
     private void startReadingTask(){
         ReadingSensor readingSensor = new ReadingSensor();
         readingSensor.execute();

@@ -19,6 +19,7 @@ import java.util.Locale;
 public class GPSmanager {
     private LocationManager manager;
     private final String TAG = "GPS-Manager";
+    public String myLocation = null;
     private double longitude;//경도
     private double latitude;//위도
     private double altitude;//고도
@@ -57,7 +58,7 @@ public class GPSmanager {
             //Gps 위치제공자에 의한 위치변화. 오차범위가 좁다.
             //Network 위치제공자에 의한 위치변화
             //Network 위치는 Gps에 비해 정확도가 많이 떨어진다.
-
+            myLocation = getAddress();
         }
         public void onProviderDisabled(String provider) {
             // Disabled시
@@ -77,7 +78,9 @@ public class GPSmanager {
 
 
     /** 위도와 경도 기반으로 주소를 리턴하는 메서드*/
-    public String getAddress(double lat, double lng){
+    public String getAddress(){
+        double lat = latitude;
+        double lng = longitude;
         String address = null;
 
         //위치정보를 활용하기 위한 구글 API 객체

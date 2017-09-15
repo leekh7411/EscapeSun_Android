@@ -15,18 +15,21 @@
         android:background="@color/colorPrimary"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="5dp"
+        android:padding="10dp"
         android:weightSum="1">
 
         <TextView
             android:id="@+id/titleText"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:layout_weight="1"
+            android:gravity="left|center"
             android:paddingLeft="20dp"
             android:text="태.피.하.조.아"
             android:textColor="@android:color/black"
-            android:textSize="18sp" />
+            android:textSize="14sp" />
 
         <Space
             android:layout_width="wrap_content"
@@ -37,31 +40,34 @@
             android:id="@+id/doRefreshBTN"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_weight="0.1"
             android:background="@color/colorPrimary"
-            android:padding="5dp"
+            android:padding="0dp"
             android:src="@drawable/ic_refresh" />
-
-        <ImageButton
-            android:id="@+id/callListBTN"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="0.1"
-            android:background="@color/colorPrimary"
-            android:padding="5dp"
-            android:src="@drawable/emergency_list" />
 
         <ImageButton
             android:id="@+id/manageBleBTN"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_weight="0.1"
             android:background="@color/colorPrimary"
-            android:padding="5dp"
+            android:padding="0dp"
             android:src="@drawable/ble_icon" />
+
+        <ImageButton
+            android:id="@+id/callListBTN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="0.1"
+            android:background="@color/colorPrimary"
+            android:padding="0dp"
+            android:src="@drawable/emergency_list" />
 
     </LinearLayout>
 
@@ -88,111 +94,61 @@
                     android:layout_height="wrap_content" />
 
                 <LinearLayout
+                    android:id="@+id/Alarm_Distance"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="1dp"
                     android:background="@android:color/background_light"
-                    android:gravity="center"
                     android:orientation="vertical"
                     android:padding="10dp">
 
-                    <TextView
-                        android:id="@+id/valueTitle_Temperature"
-                        android:layout_width="wrap_content"
+                    <Switch
+                        android:id="@+id/alarm_distance_switch"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="외부 온도"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp" />
-
-                    <ImageButton
-                        android:id="@+id/value_imageBTN_Temperature"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/ic_menu_gallery" />
+                        android:layout_weight="1"
+                        android:text="이동거리 기준 초과 알람 설정" />
 
                     <TextView
-                        android:id="@+id/sensor_value_Temperature"
+                        android:id="@+id/alarm_distance_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="loading..."
-                        android:textColor="@color/colorMyStamps"
-                        android:textSize="36sp" />
-
-                    <TextView
-                        android:id="@+id/value_description_Temperature"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center"
-                        android:paddingLeft="20dp"
-                        android:paddingRight="20dp"
-                        android:text="바깥 온도는 활활 불타고 있다. 지금 나가면 살아남을 수 있을까?"
-                        android:textColor="@android:color/darker_gray"
-                        android:textSize="14sp" />
+                        android:layout_height="match_parent"
+                        android:text="설정된 기준값 없고 지금까지 0m" />
 
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/Alarm_Heart_Rate"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="3dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
                     android:background="@android:color/background_light"
-                    android:gravity="center"
                     android:orientation="vertical"
                     android:padding="10dp">
 
-                    <TextView
-                        android:id="@+id/valueTitle_BodyTemp"
-                        android:layout_width="wrap_content"
+                    <Switch
+                        android:id="@+id/alarm_heart_rate_switch"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="체온"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp" />
-
-                    <ImageButton
-                        android:id="@+id/value_imageBTN_BodyTemp"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/ic_menu_gallery" />
+                        android:layout_weight="1"
+                        android:text="심박수 기준 초과 알람 설정" />
 
                     <TextView
-                        android:id="@+id/sensor_value_BodyTemp"
+                        android:id="@+id/alarm_heart_rate_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="loading..."
-                        android:textColor="@color/colorMyStamps"
-                        android:textSize="36sp" />
-
-                    <TextView
-                        android:id="@+id/value_description_BodyTemp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center"
-                        android:paddingLeft="20dp"
-                        android:paddingRight="20dp"
-                        android:text="라그나로스 그 자체"
-                        android:textColor="@android:color/darker_gray"
-                        android:textSize="14sp" />
+                        android:layout_height="match_parent"
+                        android:text="설정된 기준값 없음" />
 
                 </LinearLayout>
 
                 <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="3dp"
-                android:background="@android:color/background_light"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="10dp">
+                    android:id="@+id/Heart_Rate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/background_light"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
 
                     <TextView
                         android:id="@+id/valueTitle_HeartRate"
@@ -206,16 +162,15 @@
                     <ImageButton
                         android:id="@+id/value_imageBTN_HeartRate"
                         android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_height="0dp"
                         android:background="@drawable/ic_menu_gallery" />
 
                     <TextView
                         android:id="@+id/sensor_value_HeartRate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="loading..."
+                        android:layout_marginTop="0dp"
+                        android:text="DISCONNECTED"
                         android:textColor="@color/colorMyStamps"
                         android:textSize="36sp" />
 
@@ -228,16 +183,183 @@
                         android:gravity="center"
                         android:paddingLeft="20dp"
                         android:paddingRight="20dp"
-                        android:text="(두근두근)싸늘하다.. 가슴에 비수가 날아와 꼳힌다. 정마담에게 한장.. 아귀에게 한장.."
                         android:textColor="@android:color/darker_gray"
                         android:textSize="14sp" />
 
-            </LinearLayout>
+                </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/Alarm_Heat"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@android:color/background_light"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <Switch
+                        android:id="@+id/alarm_heat_switch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="온열 손상 기준 초과 알람 설정" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:text="위험 상황 발생 시 부저가 울리며 사용자 반응이 없을 경우 긴급 문자 메시지를 자동으로 전송합니다" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/Alarm_Heat_DataSet"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/background_light"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp"
+                    android:weightSum="1.5">
+
+                    <LinearLayout
+                        android:id="@+id/Heart_Rate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                        android:background="@android:color/background_light"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:id="@+id/valueTitle_HeartRate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="심박 정보"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp" />
+
+                        <ImageButton
+                            android:id="@+id/value_imageBTN_HeartRate"
+                            android:layout_width="50dp"
+                            android:layout_height="0dp"
+                            android:background="@drawable/ic_menu_gallery" />
+
+                        <TextView
+                            android:id="@+id/sensor_value_HeartRate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="0dp"
+                            android:text="DISCONNECTED"
+                            android:textColor="@color/colorMyStamps"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/Body_Heat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                        android:background="@android:color/background_light"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:id="@+id/valueTitle_BodyTemp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="체온"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp" />
+
+                        <ImageButton
+                            android:id="@+id/value_imageBTN_BodyTemp"
+                            android:layout_width="50dp"
+                            android:layout_height="0dp"
+                            android:background="@drawable/ic_menu_gallery" />
+
+                        <TextView
+                            android:id="@+id/sensor_value_BodyTemp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="0dp"
+                            android:text="DISCONNECTED"
+                            android:textColor="@color/colorMyStamps"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/Temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                        android:background="@android:color/background_light"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:id="@+id/valueTitle_Temperature"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="외부 온도"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp" />
+
+                        <ImageButton
+                            android:id="@+id/value_imageBTN_Temperature"
+                            android:layout_width="50dp"
+                            android:layout_height="0dp"
+                            android:background="@drawable/ic_menu_gallery" />
+
+                        <TextView
+                            android:id="@+id/sensor_value_Temperature"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="0dp"
+                            android:text="DISCONNECTED"
+                            android:textColor="@color/colorMyStamps"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/Alarm_Humadity"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="1dp"
+                    android:layout_weight="0.5"
+                    android:background="@android:color/background_light"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <Switch
+                        android:id="@+id/alarm_humidity_switch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="습도 기준 초과 알람 설정" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:text="설정된 기준 습도 없음" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/Humadity"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:background="@android:color/background_light"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -255,16 +377,15 @@
                     <ImageButton
                         android:id="@+id/value_imageBTN_Humidity"
                         android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_height="0dp"
                         android:background="@drawable/ic_menu_gallery" />
 
                     <TextView
                         android:id="@+id/sensor_value_Humidity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="loading..."
+                        android:layout_marginTop="0dp"
+                        android:text="DISCONNECTED"
                         android:textColor="@color/colorMyStamps"
                         android:textSize="36sp" />
 
@@ -277,7 +398,6 @@
                         android:gravity="center"
                         android:paddingLeft="20dp"
                         android:paddingRight="20dp"
-                        android:text="습..하..습...하"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="14sp" />
 

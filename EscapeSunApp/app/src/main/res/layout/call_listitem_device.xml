@@ -22,27 +22,32 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="0.8"
-        android:background="@color/colorMyCpText"
-        android:orientation="vertical">
+        android:background="@android:color/background_light"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:weightSum="1">
 
         <TextView
             android:id="@+id/callList_name"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="0.4"
             android:background="@android:color/background_light"
+            android:gravity="left|center"
             android:padding="8dp"
             android:text="119 긴급 연락망"
             android:textColor="?attr/colorControlNormal"
-            android:textSize="18sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/callList_phone_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6"
             android:background="@android:color/background_light"
-            android:gravity="right"
+            android:gravity="right|center"
             android:paddingBottom="3dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"

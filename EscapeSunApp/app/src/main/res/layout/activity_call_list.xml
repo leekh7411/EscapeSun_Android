@@ -43,6 +43,13 @@
             android:textColor="@android:color/darker_gray" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:text=" 당신의 생체 신호에서 위험이 감지되면 아래 연락처로 긴급 문자 메시지가 전송됩니다" />
+
     <ListView
         android:id="@+id/callList"
         android:layout_width="match_parent"

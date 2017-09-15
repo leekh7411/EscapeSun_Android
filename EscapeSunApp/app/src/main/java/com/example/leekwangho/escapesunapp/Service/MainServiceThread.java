@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
@@ -17,7 +18,9 @@ import android.widget.Toast;
 import com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUtil;
 import com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid;
 import com.example.leekwangho.escapesunapp.DataReadActivity;
+import com.example.leekwangho.escapesunapp.GPS.GPSmanager;
 import com.example.leekwangho.escapesunapp.R;
+import com.example.leekwangho.escapesunapp.SMS.Messenger;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -38,12 +41,16 @@ public class MainServiceThread extends Thread {
     private BluetoothDevice mDevice = null;
     private int mStatus;
     private boolean SensorReadThreadFlag = false;
-
+    public static boolean IsEmergencyMessageSend = true;
     private final String TAG = "MainService_thread";
     private boolean IsRun = false;
+    private GPSmanager gps_manager;
+    private Messenger messenger;
     public MainServiceThread(Context _mContext){
         IsRun = true;
         mContext = _mContext;
+        gps_manager = new GPSmanager(mContext,(LocationManager)mContext.getSystemService(Context.LOCATION_SERVICE));
+        messenger = new Messenger(mContext);
         init();
     }
     @Override
@@ -55,6 +62,26 @@ public class MainServiceThread extends Thread {
             while(IsRun){
                 Log.d(TAG,"... running in main service thread");
                 sleep(1000);
+
+                if(IsEmergencyMessageSend){
+
+                    // TODO: 2017-09-15 Send Emergency SMS here!
+                    if(gps_manager.myLocation != null){
+                        IsEmergencyMessageSend = false;
+                        Log.d(TAG,"Location : " + gps_manager.myLocation);
+                        sleep(500);
+                        /*messenger.Send_MMS_To("01062429674","애국가 1절 " + gps_manager.myLocation + " 도옹해애무울과 배액" +
+                                "두~산이 마아~르고 닳~~~도록 . .  하아아느님--이 보오-우하사 우-우리 나라 만세");
+                        Log.d(TAG,"Location SMS send complete to 럼상");
+                        sleep(500);
+                        messenger.Send_MMS_To("01055760452","애국가 2절 " + gps_manager.myLocation + " 나아암사안 위에 저 쏘오나무" +
+                                "처얼가블 두우른드읏 바람서어리 부울벼언하암은 우우리 기상일세");
+                        Log.d(TAG,"Location SMS send complete to 건민");*/
+                        sleep(500);
+
+                    }
+
+                }
             }
         }catch (Exception e){
             e.printStackTrace();

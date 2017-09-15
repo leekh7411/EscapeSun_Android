@@ -29,7 +29,8 @@
             android:ems="10"
             android:gravity="center"
             android:hint="연락처 이름"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textColorLink="@android:color/black" />
 
         <EditText
             android:id="@+id/edit_text_phone"
@@ -38,16 +39,17 @@
             android:ems="10"
             android:gravity="center"
             android:hint="전화번호"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textColorLink="@android:color/black" />
 
         <Button
             android:id="@+id/addCallListBTN"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorMyStamps"
+            android:background="@color/color_invisible"
             android:gravity="center"
             android:text="추가하기"
-            android:textColor="@android:color/background_light" />
+            android:textColor="@android:color/black" />
     </LinearLayout>
 
 </LinearLayout>

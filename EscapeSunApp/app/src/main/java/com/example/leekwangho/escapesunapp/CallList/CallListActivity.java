@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.example.leekwangho.escapesunapp.Database.MainDBHelper;
+import com.example.leekwangho.escapesunapp.Dialog.DeleteCallListDialog;
 import com.example.leekwangho.escapesunapp.R;
 import java.util.ArrayList;
 
@@ -25,6 +25,7 @@ public class CallListActivity extends AppCompatActivity {
     private CallListAdapter adapter = null;
     private final String TAG = "CallListActivity";
     private final int ADD_CALL_LIST = 100;
+    private DeleteCallListDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +41,7 @@ public class CallListActivity extends AppCompatActivity {
                 CallListItem item = adapter.getItem(i);
                 if (item != null) {
                     Log.d(TAG,"Click -> Name: " + item.getName() + " , Phone : " + item.getPhone_number());
+                    deleteDialog(item.getName(),item.getPhone_number(),i);
                 }
             }
         });
@@ -60,6 +62,38 @@ public class CallListActivity extends AppCompatActivity {
             }
         });
     }
+    private void deleteDialog(String name, String num, final int idx){
+        dialog = new DeleteCallListDialog(
+                CallListActivity.this,
+                "해당 연락처를 삭제 하시겠습니까?", name + "\n" + num,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        adapter.callListItems.remove(idx);
+                        adapter.notifyDataSetChanged();
+                        dialog.dismiss();
+                    }
+                },
+                cancelBTNListener
+        );
+        dialog.show();
+    }
+    private View.OnClickListener okBTNListener = new View.OnClickListener() {
+        public void onClick(View v) {
+
+            dialog.dismiss();
+        }
+    };
+
+    private View.OnClickListener cancelBTNListener = new View.OnClickListener() {
+        public void onClick(View v) {
+
+            dialog.dismiss();
+        }
+    };
+
+
+
 
     @Override
     protected void onResume() {
