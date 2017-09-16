@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.leekwangho.escapesunapp.CallList.CallListActivity;
+import com.example.leekwangho.escapesunapp.Dialog.AlarmSettingDialog;
 import com.example.leekwangho.escapesunapp.Service.MainService;
 
 public class DataReadActivity extends Activity {
@@ -95,7 +96,9 @@ public class DataReadActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    Toast.makeText(getApplicationContext(),"ON",Toast.LENGTH_SHORT).show();
+                    AlarmSettingDialog dialog = new AlarmSettingDialog(
+                            DataReadActivity.this,"이동거리 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_DISTANCE);
+                    dialog.show();
                 }else{
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
@@ -106,7 +109,9 @@ public class DataReadActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    Toast.makeText(getApplicationContext(),"ON",Toast.LENGTH_SHORT).show();
+                    AlarmSettingDialog dialog = new AlarmSettingDialog(
+                            DataReadActivity.this,"심박수 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_HEART_RATE);
+                    dialog.show();
                 }else{
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
@@ -117,7 +122,7 @@ public class DataReadActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    Toast.makeText(getApplicationContext(),"ON",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Heat scan ON",Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
@@ -128,7 +133,9 @@ public class DataReadActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    Toast.makeText(getApplicationContext(),"ON",Toast.LENGTH_SHORT).show();
+                    AlarmSettingDialog dialog = new AlarmSettingDialog(
+                            DataReadActivity.this,"습도 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_HUMIDITY);
+                    dialog.show();
                 }else{
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }

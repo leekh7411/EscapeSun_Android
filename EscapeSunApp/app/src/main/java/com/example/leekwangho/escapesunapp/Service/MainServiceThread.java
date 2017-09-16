@@ -1,5 +1,4 @@
 package com.example.leekwangho.escapesunapp.Service;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -14,16 +13,17 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUtil;
 import com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid;
 import com.example.leekwangho.escapesunapp.DataReadActivity;
 import com.example.leekwangho.escapesunapp.GPS.GPSmanager;
 import com.example.leekwangho.escapesunapp.R;
 import com.example.leekwangho.escapesunapp.SMS.Messenger;
-
 import java.util.ArrayList;
 import java.util.UUID;
+
+import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.MODE_SWITCH;
+import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.MY_SERVICE;
 
 /**
  * Created by LeeKwangho on 2017-09-09.
@@ -46,6 +46,16 @@ public class MainServiceThread extends Thread {
     private boolean IsRun = false;
     private GPSmanager gps_manager;
     private Messenger messenger;
+
+    public static boolean IsDistanceOn = false;
+    public static boolean IsHeartRateOn =false;
+    public static boolean IsHeatScanOn = false;
+    public static boolean IsHumidityOn = false;
+    public static int DistanceValue = 0;
+    public static int HeartRateValue = 0;
+    public static int HumidityValue = 0;
+
+
     public MainServiceThread(Context _mContext){
         IsRun = true;
         mContext = _mContext;
@@ -63,25 +73,16 @@ public class MainServiceThread extends Thread {
                 Log.d(TAG,"... running in main service thread");
                 sleep(1000);
 
+                // TODO: 2017-09-15 Send Emergency SMS here!
                 if(IsEmergencyMessageSend){
-
-                    // TODO: 2017-09-15 Send Emergency SMS here!
                     if(gps_manager.myLocation != null){
-                        IsEmergencyMessageSend = false;
-                        Log.d(TAG,"Location : " + gps_manager.myLocation);
-                        sleep(500);
-                        /*messenger.Send_MMS_To("01062429674","애국가 1절 " + gps_manager.myLocation + " 도옹해애무울과 배액" +
-                                "두~산이 마아~르고 닳~~~도록 . .  하아아느님--이 보오-우하사 우-우리 나라 만세");
-                        Log.d(TAG,"Location SMS send complete to 럼상");
-                        sleep(500);
-                        messenger.Send_MMS_To("01055760452","애국가 2절 " + gps_manager.myLocation + " 나아암사안 위에 저 쏘오나무" +
-                                "처얼가블 두우른드읏 바람서어리 부울벼언하암은 우우리 기상일세");
-                        Log.d(TAG,"Location SMS send complete to 건민");*/
-                        sleep(500);
-
+                        SendEmergencyMessage();
                     }
-
                 }
+
+                // TODO: 2017-09-16 모드 변경 시 여기서 블루투스로 설정 값 전달!
+                BleSendCheck();
+
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -92,10 +93,55 @@ public class MainServiceThread extends Thread {
         mConnGatt.close();
         SensorReadThreadFlag = false;
     }
-
+    private void BleSendCheck(){
+        /**
+         * todo: Ble를 통해 모드값(1개 정수 변수)와 설정 값(1개 정수 변수)를 전달
+         * Mode value code
+         * 0 : default, nothing
+         * 1 : check distance
+         * 2 : check heart rate
+         * 3 : check heat scan
+         * 4 : check humidity
+         * 119 : Emergency
+         * */
+        if(IsDistanceOn){ // code : 1
+            IsDistanceOn = false;
+            Log.d(TAG,"Ble를 통해 이동거리 설정 전달");
+            BLEWriteData((byte)0x01);
+        }
+        if(IsHeartRateOn){ // code : 2
+            IsHeartRateOn = false;
+            Log.d(TAG,"Ble를 통해 심박수 설정 전달");
+            BLEWriteData((byte)0x02);
+        }
+        if(IsHeatScanOn){ // code : 3
+            IsHeatScanOn = false;
+            Log.d(TAG,"Ble를 통해 온열손상 설정 전달");
+            BLEWriteData((byte)0x03);
+        }
+        if(IsHumidityOn){ // code : 4
+            IsHumidityOn = false;
+            Log.d(TAG,"Ble를 통해 습도 설정 전달");
+            BLEWriteData((byte)0x04);
+        }
+    }
     public void setThreadRun(boolean IsRun){
         this.IsRun = IsRun;
 
+    }
+
+    private void SendEmergencyMessage(){
+        IsEmergencyMessageSend = false;
+        Log.d(TAG,"Location : " + gps_manager.myLocation);
+        try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
+        /*messenger.Send_MMS_To("01062429674","애국가 1절 " + gps_manager.myLocation + " 도옹해애무울과 배액" +
+                "두~산이 마아~르고 닳~~~도록 . .  하아아느님--이 보오-우하사 우-우리 나라 만세");
+        Log.d(TAG,"Location SMS send complete to 럼상");
+        sleep(500);
+        messenger.Send_MMS_To("01055760452","애국가 2절 " + gps_manager.myLocation + " 나아암사안 위에 저 쏘오나무" +
+                "처얼가블 두우른드읏 바람서어리 부울벼언하암은 우우리 기상일세");
+        Log.d(TAG,"Location SMS send complete to 건민");*/
+        try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
     }
 
     /*---------------------------------------------------------------------------------------------*/
@@ -202,7 +248,7 @@ public class MainServiceThread extends Thread {
 
                 }
 
-                if (BleUuid.LED_CHAR
+                if (MODE_SWITCH
                         .equalsIgnoreCase(characteristic.getUuid().toString())) {
                     //final String name = characteristic.getStringValue(0);
                     Log.d(TAG, "ReadData in LED : " + characteristic.getStringValue(0));
@@ -364,7 +410,7 @@ public class MainServiceThread extends Thread {
     }
 
     private void StartSensorReadThread(){
-        SensorReadThread thread = new SensorReadThread(BleUuid.MY_SERVICE,BleUuid.SENSOR_DATA_CHAR_ARRAY);
+        SensorReadThread thread = new SensorReadThread(MY_SERVICE,BleUuid.SENSOR_DATA_CHAR_ARRAY);
         thread.start();
     }
 
@@ -407,7 +453,30 @@ public class MainServiceThread extends Thread {
         }
 
     }
+    private boolean BLEWriteData(byte value){
+        if(mConnGatt == null){
+            Log.d(TAG, "BLEWriteData Failed");
+            return false;
+        }
+        BluetoothGattService disService = mConnGatt.getService(UUID.fromString(MY_SERVICE));
+        Log.d(TAG, "BLEWriteData Start !");
+        if (disService == null) {
+            Log.d(TAG, "-> Dis service not found!");
+            IsBLEInit = false;
+            return false;
+        }
+        BluetoothGattCharacteristic characteristic = disService.getCharacteristic(UUID.fromString(MODE_SWITCH));
+        if (characteristic == null) {
+            Log.d(TAG, "-> Charateristic not found!");
+            return false;
+        }
+        characteristic.setValue(new byte[] { (byte) value });
+        if (mConnGatt.writeCharacteristic(characteristic)) {
 
+        }
+        Log.d(TAG, "-> Write Success!");
+        return true;
+    }
     private boolean BLEReadData(String service_uuid, String sensor_uuid) {
         if(mConnGatt == null){
             printToast("Please read after Scan and refresh!");

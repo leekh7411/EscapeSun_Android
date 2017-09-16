@@ -35,7 +35,7 @@ public class DeleteCallListDialog extends Dialog {
         lpWindow.dimAmount = 0.8f;
         getWindow().setAttributes(lpWindow);
 
-        setContentView(R.layout.activity_custom_dialog);
+        setContentView(R.layout.activity_delete_dialog);
 
         mTitleView = (TextView) findViewById(R.id.txt_title);
         mContentView = (TextView) findViewById(R.id.txt_content);

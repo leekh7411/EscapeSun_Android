@@ -29,7 +29,6 @@ import com.example.leekwangho.escapesunapp.R;
 
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.concurrent.Exchanger;
 
 
 /**
@@ -226,7 +225,7 @@ public class SensorDataFragment extends Fragment implements View.OnClickListener
                     });
                 }
 
-                if (BleUuid.LED_CHAR
+                if (BleUuid.MODE_SWITCH
                         .equalsIgnoreCase(characteristic.getUuid().toString())) {
                     //final String name = characteristic.getStringValue(0);
                     Log.d(TAG, "ReadData in LED : " + characteristic.getStringValue(0));
@@ -321,7 +320,7 @@ public class SensorDataFragment extends Fragment implements View.OnClickListener
         }
 
 
-        BluetoothGattCharacteristic characteristic = disService.getCharacteristic(UUID.fromString(BleUuid.LED_CHAR));
+        BluetoothGattCharacteristic characteristic = disService.getCharacteristic(UUID.fromString(BleUuid.MODE_SWITCH));
 
         if (characteristic == null) {
             Log.d(TAG, "charateristic not found!");
@@ -351,7 +350,7 @@ public class SensorDataFragment extends Fragment implements View.OnClickListener
         }
 
 
-        BluetoothGattCharacteristic characteristic = disService.getCharacteristic(UUID.fromString(BleUuid.LED_CHAR));
+        BluetoothGattCharacteristic characteristic = disService.getCharacteristic(UUID.fromString(BleUuid.MODE_SWITCH));
 
         if (characteristic == null) {
             Log.d(TAG, "firmware revison charateristic not found!");

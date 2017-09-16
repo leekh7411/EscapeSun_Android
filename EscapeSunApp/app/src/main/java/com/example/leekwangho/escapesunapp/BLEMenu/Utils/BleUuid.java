@@ -22,9 +22,6 @@ public class BleUuid {
 
     // 19B10001-E8F2-537E-4F6C-D104768A1214 - LED
     public static final String MY_SERVICE = "19B10000-E8F2-537E-4F6C-D104768A1214";
-    public static final String LED_CHAR = "19B10001-E8F2-537E-4F6C-D104768A1214";
-    public static final String SENSOR_CHAR = "19B10002-E8F2-537E-4F6C-D104768A1214";
+    public static final String MODE_SWITCH = "19B10001-E8F2-537E-4F6C-D104768A1214";
     public static final String SENSOR_DATA_CHAR_ARRAY = "19B10006-E8F2-537E-4F6C-D104768A1214";
-    public static final String SENSOR2_CHAR = "19B10004-E8F2-537E-4F6C-D104768A1214";
-    public static final String SENSOR3_CHAR = "19B10005-E8F2-537E-4F6C-D104768A1214";
 }
