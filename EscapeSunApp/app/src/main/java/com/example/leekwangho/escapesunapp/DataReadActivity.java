@@ -89,6 +89,9 @@ public class DataReadActivity extends Activity {
         humidity = (TextView)findViewById(R.id.sensor_value_Humidity);
 
         // Switch
+        if(sharedPreferenceUtil.getData("Is_distance_value").equals("null"))sharedPreferenceUtil.setData("Is_distance_value","0");
+        if(sharedPreferenceUtil.getData("Is_heart_rate_value").equals("null"))sharedPreferenceUtil.setData("Is_heart_rate_value","0");
+        if(sharedPreferenceUtil.getData("Is_humidity_value").equals("null"))sharedPreferenceUtil.setData("Is_humidity_value","0");
         switchInit();
     }
     private void switchInit(){
@@ -98,11 +101,15 @@ public class DataReadActivity extends Activity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
                     sharedPreferenceUtil.setData("distance","on");
-                    AlarmSettingDialog dialog = new AlarmSettingDialog(
-                            DataReadActivity.this,"이동거리 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_DISTANCE);
-                    dialog.show();
+                    if(sharedPreferenceUtil.getData("Is_distance_value").equals("0")){
+                        AlarmSettingDialog dialog = new AlarmSettingDialog(
+                                DataReadActivity.this,"이동거리 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_DISTANCE);
+                        dialog.show();
+                    }
+
                 }else{
                     sharedPreferenceUtil.setData("distance","off");
+                    sharedPreferenceUtil.setData("Is_distance_value","0");
                     MainServiceThread.IsDistanceOFF = true;
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
@@ -114,11 +121,15 @@ public class DataReadActivity extends Activity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
                     sharedPreferenceUtil.setData("heart_rate","on");
-                    AlarmSettingDialog dialog = new AlarmSettingDialog(
-                            DataReadActivity.this,"심박수 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_HEART_RATE);
-                    dialog.show();
+                    if(sharedPreferenceUtil.getData("Is_heart_rate_value").equals("0")){
+                        AlarmSettingDialog dialog = new AlarmSettingDialog(
+                                DataReadActivity.this,"심박수 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_HEART_RATE);
+                        dialog.show();
+                    }
+
                 }else{
                     sharedPreferenceUtil.setData("heart_rate","off");
+                    sharedPreferenceUtil.setData("Is_heart_rate_value","0");
                     MainServiceThread.IsHeartRateOFF = true;
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
@@ -145,9 +156,12 @@ public class DataReadActivity extends Activity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
                     sharedPreferenceUtil.setData("humidity","on");
-                    AlarmSettingDialog dialog = new AlarmSettingDialog(
-                            DataReadActivity.this,"습도 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_HUMIDITY);
-                    dialog.show();
+                    if(sharedPreferenceUtil.getData("Is_humidity_value").equals("0")){
+                        AlarmSettingDialog dialog = new AlarmSettingDialog(
+                                DataReadActivity.this,"습도 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_HUMIDITY);
+                        dialog.show();
+                    }
+
                 }else{
                     sharedPreferenceUtil.setData("humidity","off");
                     MainServiceThread.IsHumidityOFF = true;
@@ -175,7 +189,6 @@ public class DataReadActivity extends Activity {
         if(sharedPreferenceUtil.getData("humidity").equals("on"))alarm_humidity.setChecked(true);
         if(sharedPreferenceUtil.getData("service").equals("on"))service_switch.setChecked(true);
 
-        
     }
 
 
