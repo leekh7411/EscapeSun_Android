@@ -94,6 +94,30 @@
                     android:layout_height="wrap_content" />
 
                 <LinearLayout
+                    android:id="@+id/Service_ON_OFF"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="1dp"
+                    android:background="@android:color/background_light"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <Switch
+                        android:id="@+id/service_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="디바이스와 항상 연결하기" />
+
+                    <TextView
+                        android:id="@+id/service_sub_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="앱이 종료되도 계속 연결 됩니다" />
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/Alarm_Distance"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

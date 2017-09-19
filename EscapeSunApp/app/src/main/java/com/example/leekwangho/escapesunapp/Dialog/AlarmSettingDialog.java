@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.leekwangho.escapesunapp.R;
+import com.example.leekwangho.escapesunapp.Service.MainService;
 import com.example.leekwangho.escapesunapp.Service.MainServiceThread;
 
 public class AlarmSettingDialog extends Dialog {
@@ -140,7 +141,7 @@ public class AlarmSettingDialog extends Dialog {
                         break;
                     }
                     case ALARM_HEAT:{
-                        MainServiceThread.IsHeatScanOn = true;
+
                         break;
                     }
                     case ALARM_HUMIDITY:{
@@ -159,19 +160,15 @@ public class AlarmSettingDialog extends Dialog {
             public void onClick(View view) {
                 switch (MY_ALARM){
                     case ALARM_DISTANCE:{
-                        MainServiceThread.IsDistanceOn = false;
                         break;
                     }
                     case ALARM_HEART_RATE:{
-                        MainServiceThread.IsHeartRateOn = false;
                         break;
                     }
                     case ALARM_HEAT:{
-                        MainServiceThread.IsHeatScanOn = false;
                         break;
                     }
                     case ALARM_HUMIDITY:{
-                        MainServiceThread.IsHumidityOn = false;
                         break;
                     }
                 }

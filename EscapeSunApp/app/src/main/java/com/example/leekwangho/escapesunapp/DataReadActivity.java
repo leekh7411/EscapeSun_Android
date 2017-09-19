@@ -16,12 +16,14 @@ import android.widget.Toast;
 import com.example.leekwangho.escapesunapp.CallList.CallListActivity;
 import com.example.leekwangho.escapesunapp.Dialog.AlarmSettingDialog;
 import com.example.leekwangho.escapesunapp.Service.MainService;
+import com.example.leekwangho.escapesunapp.Service.MainServiceThread;
 
 public class DataReadActivity extends Activity {
     private TextView title;
     public static TextView temperature,body_temp,heart_rate,humidity;
     private ImageButton callListBTN,bleBTN,refreshBTN;
-    private Switch alarm_distance,alarm_heart_rate,alarm_heat,alarm_humidity;
+    private Switch alarm_distance,alarm_heart_rate,alarm_heat,alarm_humidity,service_switch;
+    private Intent serviceIntent = null;
     public static boolean IsActivityRun = false;
     @Override
     protected void onResume() {
@@ -55,7 +57,7 @@ public class DataReadActivity extends Activity {
             // Already Granted
         }
         IsActivityRun = true;
-        title = (TextView)findViewById(R.id.titleText);
+        title = findViewById(R.id.titleText);
         title.setText(MainService.selectedDevice.getDisplayName() + " " + MainService.selectedBleDevice.getAddress());
         callListBTN = (ImageButton)findViewById(R.id.callListBTN);
         callListBTN.setOnClickListener(new View.OnClickListener() {
@@ -82,10 +84,6 @@ public class DataReadActivity extends Activity {
         body_temp = (TextView)findViewById(R.id.sensor_value_BodyTemp);
         heart_rate = (TextView)findViewById(R.id.sensor_value_HeartRate);
         humidity = (TextView)findViewById(R.id.sensor_value_Humidity);
-        //Service start
-        startMainService();
-        //Reading AsyncTask Start
-        //startReadingTask();
 
         // Switch
         switchInit();
@@ -100,6 +98,7 @@ public class DataReadActivity extends Activity {
                             DataReadActivity.this,"이동거리 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_DISTANCE);
                     dialog.show();
                 }else{
+                    MainServiceThread.IsDistanceOFF = true;
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
             }
@@ -113,6 +112,7 @@ public class DataReadActivity extends Activity {
                             DataReadActivity.this,"심박수 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_HEART_RATE);
                     dialog.show();
                 }else{
+                    MainServiceThread.IsHeartRateOFF = true;
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
             }
@@ -122,8 +122,10 @@ public class DataReadActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
+                    MainServiceThread.IsHeatScanOn = true;
                     Toast.makeText(getApplicationContext(),"Heat scan ON",Toast.LENGTH_SHORT).show();
                 }else{
+                    MainServiceThread.IsHeatScanOFF = true;
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
             }
@@ -137,7 +139,19 @@ public class DataReadActivity extends Activity {
                             DataReadActivity.this,"습도 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_HUMIDITY);
                     dialog.show();
                 }else{
+                    MainServiceThread.IsHumidityOFF = true;
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        service_switch = (Switch)findViewById(R.id.service_title);
+        service_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    startMainService();
+                }else{
+                    stopMainService();
                 }
             }
         });
@@ -150,12 +164,13 @@ public class DataReadActivity extends Activity {
     }
     // Service Methods
     private void startMainService(){
-        Intent intent = new Intent(getApplicationContext(),MainService.class);
-        startService(intent);
+        serviceIntent = new Intent(getApplicationContext(),MainService.class);
+        startService(serviceIntent);
     }
-    private void isServiceDown(){
-        Intent intent = new Intent(getApplicationContext(),MainService.class);
-        stopService(intent);
+    private void stopMainService(){
+        //Intent intent = new Intent(getApplicationContext(),MainService.class);
+        if(serviceIntent == null)serviceIntent = new Intent(getApplicationContext(),MainService.class);
+        stopService(serviceIntent);
     }
 
     /**
@@ -204,7 +219,6 @@ public class DataReadActivity extends Activity {
     };
     @Override
     public void onBackPressed() {
-        isServiceDown();
         super.onBackPressed();
         overridePendingTransition(R.anim.translate_left_in,R.anim.translate_right_out);
     }

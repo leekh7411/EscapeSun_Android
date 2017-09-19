@@ -2,6 +2,7 @@ package com.example.leekwangho.escapesunapp.Database;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -26,7 +27,7 @@ public class CallListDB extends SQLiteOpenHelper {
         // 새로운 테이블 생성
         /* 이름은 MONEYBOOK이고, 자동으로 값이 증가하는 _id 정수형 기본키 컬럼과
         item 문자열 컬럼, price 정수형 컬럼, create_at 문자열 컬럼으로 구성된 테이블을 생성. */
-        db.execSQL("CREATE TABLE IF NOT EXISTS "+table+" (phone_number TEXT, key_name TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS "+table+" (phone_number varchar, key_name varchar);");
         Log.d(TAG,"create call list database table");
     }
 
@@ -92,21 +93,34 @@ public class CallListDB extends SQLiteOpenHelper {
     public void delete_call_list_using_key_name(String key_name ){
         SQLiteDatabase db = getWritableDatabase();
         // 입력한 항목과 일치하는 행 삭제
-        db.execSQL("DELETE FROM call_list where key_name like " + key_name +";");
+        String query = "DELETE FROM call_list where key_name like '" + key_name +"';";
+        db.execSQL(query);
+        Log.d(TAG,query);
+        db.close();
+    }
+
+    public void delete_call_list_using_phone(String num ){
+        SQLiteDatabase db = getWritableDatabase();
+        // 입력한 항목과 일치하는 행 삭제
+        String query = "DELETE FROM call_list WHERE phone_number='" + num +"';";
+        try{db.execSQL(query);}catch (SQLException e){
+            e.printStackTrace();
+        }
+        Log.d(TAG,query);
         db.close();
     }
 
     public void update__phone_number__using__key_name(String new_phone_number,String key_name){
         SQLiteDatabase db = getWritableDatabase();
         // 입력한 항목과 일치하는 행 삭제
-        db.execSQL("UPDATE call_list SET phone_number = "+ new_phone_number +" where key_name like " + key_name +";");
+        db.execSQL("UPDATE call_list SET phone_number = "+ new_phone_number +" where key_name like '" + key_name +"';");
         db.close();
     }
 
     public void update__key_name__using__phone_number(String phone_number,String new_key_name){
         SQLiteDatabase db = getWritableDatabase();
         // 입력한 항목과 일치하는 행 삭제
-        db.execSQL("UPDATE call_list SET key_name = "+ new_key_name +" where phone_number like " + phone_number+";");
+        db.execSQL("UPDATE call_list SET key_name = "+ new_key_name +" where phone_number like '" + phone_number+"';");
         db.close();
     }
 

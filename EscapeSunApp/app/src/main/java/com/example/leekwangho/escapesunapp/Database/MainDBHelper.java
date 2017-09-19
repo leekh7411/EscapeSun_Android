@@ -27,7 +27,11 @@ public class MainDBHelper {
         callListDB.insert_new_list(name,phone_num);
         callListDB.close();
     }
-
+    public void __callList__delete_using_phone_number(String num){
+        callListDB = new CallListDB(appContext,"CALL_LIST_DB",null,1);
+        callListDB.delete_call_list_using_phone(num);
+        callListDB.close();
+    }
     public void __callList__delete_using_name(String name){
         callListDB = new CallListDB(appContext,"CALL_LIST_DB",null,1);
         callListDB.delete_call_list_using_key_name(name);

@@ -16,6 +16,7 @@ import com.example.leekwangho.escapesunapp.Database.MainDBHelper;
 import com.example.leekwangho.escapesunapp.Dialog.DeleteCallListDialog;
 import com.example.leekwangho.escapesunapp.R;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class CallListActivity extends AppCompatActivity {
     MainDBHelper mainDBHelper;
@@ -69,7 +70,14 @@ public class CallListActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        mainDBHelper.__callList__delete_all_data();
                         adapter.callListItems.remove(idx);
+                        for(int i = 0 ; i < adapter.callListItems.size();i++){
+                            mainDBHelper.__callList__insert_new_list(
+                                    adapter.callListItems.get(i).getName(),
+                                    adapter.callListItems.get(i).getPhone_number()
+                            );
+                        }
                         adapter.notifyDataSetChanged();
                         dialog.dismiss();
                     }

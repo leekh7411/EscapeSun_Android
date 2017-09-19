@@ -25,6 +25,9 @@ public class MainService extends Service {
     public static int temperature;
     public static int body_heat;
     public static int heart_rate;
+    public static int humidity;
+    public static int distance = 0;
+    public static byte current_mode = 0;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -33,6 +36,7 @@ public class MainService extends Service {
         // 데이터를 전달할 필요가 없으면 return null;
         return null;
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -41,6 +45,7 @@ public class MainService extends Service {
         mainServiceThread = new MainServiceThread(mContext);
         mainServiceThread.start();
     }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
