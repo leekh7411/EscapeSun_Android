@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.leekwangho.escapesunapp.CallList.CallListActivity;
+import com.example.leekwangho.escapesunapp.Database.SharedPreferenceUtil;
 import com.example.leekwangho.escapesunapp.Dialog.AlarmSettingDialog;
 import com.example.leekwangho.escapesunapp.Service.MainService;
 import com.example.leekwangho.escapesunapp.Service.MainServiceThread;
@@ -24,6 +25,7 @@ public class DataReadActivity extends Activity {
     private ImageButton callListBTN,bleBTN,refreshBTN;
     private Switch alarm_distance,alarm_heart_rate,alarm_heat,alarm_humidity,service_switch;
     private Intent serviceIntent = null;
+    private SharedPreferenceUtil sharedPreferenceUtil;
     public static boolean IsActivityRun = false;
     @Override
     protected void onResume() {
@@ -56,6 +58,7 @@ public class DataReadActivity extends Activity {
         } else {
             // Already Granted
         }
+        sharedPreferenceUtil = new SharedPreferenceUtil(DataReadActivity.this);
         IsActivityRun = true;
         title = findViewById(R.id.titleText);
         title.setText(MainService.selectedDevice.getDisplayName() + " " + MainService.selectedBleDevice.getAddress());
@@ -94,10 +97,12 @@ public class DataReadActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
+                    sharedPreferenceUtil.setData("distance","on");
                     AlarmSettingDialog dialog = new AlarmSettingDialog(
                             DataReadActivity.this,"이동거리 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_DISTANCE);
                     dialog.show();
                 }else{
+                    sharedPreferenceUtil.setData("distance","off");
                     MainServiceThread.IsDistanceOFF = true;
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
@@ -108,10 +113,12 @@ public class DataReadActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
+                    sharedPreferenceUtil.setData("heart_rate","on");
                     AlarmSettingDialog dialog = new AlarmSettingDialog(
                             DataReadActivity.this,"심박수 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_HEART_RATE);
                     dialog.show();
                 }else{
+                    sharedPreferenceUtil.setData("heart_rate","off");
                     MainServiceThread.IsHeartRateOFF = true;
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
@@ -122,9 +129,11 @@ public class DataReadActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
+                    sharedPreferenceUtil.setData("heat","on");
                     MainServiceThread.IsHeatScanOn = true;
                     Toast.makeText(getApplicationContext(),"Heat scan ON",Toast.LENGTH_SHORT).show();
                 }else{
+                    sharedPreferenceUtil.setData("heat","off");
                     MainServiceThread.IsHeatScanOFF = true;
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
@@ -135,10 +144,12 @@ public class DataReadActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
+                    sharedPreferenceUtil.setData("humidity","on");
                     AlarmSettingDialog dialog = new AlarmSettingDialog(
                             DataReadActivity.this,"습도 알람 기준을 설정하세요", AlarmSettingDialog.ALARM_HUMIDITY);
                     dialog.show();
                 }else{
+                    sharedPreferenceUtil.setData("humidity","off");
                     MainServiceThread.IsHumidityOFF = true;
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
@@ -149,12 +160,22 @@ public class DataReadActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
+                    sharedPreferenceUtil.setData("service","on");
                     startMainService();
                 }else{
+                    sharedPreferenceUtil.setData("service","off");
                     stopMainService();
                 }
             }
         });
+
+        if(sharedPreferenceUtil.getData("distance").equals("on"))alarm_distance.setChecked(true);
+        if(sharedPreferenceUtil.getData("heart_rate").equals("on"))alarm_heart_rate.setChecked(true);
+        if(sharedPreferenceUtil.getData("heat").equals("on"))alarm_heat.setChecked(true);
+        if(sharedPreferenceUtil.getData("humidity").equals("on"))alarm_humidity.setChecked(true);
+        if(sharedPreferenceUtil.getData("service").equals("on"))service_switch.setChecked(true);
+
+        
     }
 
 
