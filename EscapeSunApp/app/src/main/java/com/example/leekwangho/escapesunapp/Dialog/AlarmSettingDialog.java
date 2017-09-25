@@ -28,6 +28,8 @@ public class AlarmSettingDialog extends Dialog {
     public static final int ALARM_HEART_RATE = 200;
     public static final int ALARM_HEAT = 300;
     public static final int ALARM_HUMIDITY = 400;
+    public static final int ALARM_TEMPERATURE = 500;
+    public static final int ALARM_BODY_HEAT = 600;
     private int MY_ALARM;
     private int MY_VALUE = 0;
     private View.OnClickListener mOkBTNListener;
@@ -89,6 +91,18 @@ public class AlarmSettingDialog extends Dialog {
                         mContentView.setText(MY_VALUE+"(%)");
                         break;
                     }
+                    case ALARM_TEMPERATURE:{
+                        MY_VALUE++;
+                        if(MY_VALUE > 100)MY_VALUE = 100;
+                        mContentView.setText(MY_VALUE+"(℃)");
+                        break;
+                    }
+                    case ALARM_BODY_HEAT:{
+                        MY_VALUE++;
+                        if(MY_VALUE > 100)MY_VALUE = 100;
+                        mContentView.setText(MY_VALUE+"(℃)");
+                        break;
+                    }
                 }
             }
         });
@@ -100,13 +114,13 @@ public class AlarmSettingDialog extends Dialog {
                 switch (MY_ALARM){
                     case ALARM_DISTANCE:{
                         MY_VALUE-=10;
-                        if(MY_VALUE < 0 )MY_VALUE = 0;
+                        if(MY_VALUE < 1 )MY_VALUE = 1;
                         mContentView.setText(MY_VALUE+"(M)");
                         break;
                     }
                     case ALARM_HEART_RATE:{
                         MY_VALUE--;
-                        if(MY_VALUE < 0)MY_VALUE = 0;
+                        if(MY_VALUE < 1)MY_VALUE = 1;
                         mContentView.setText(MY_VALUE+"(bpm)");
                         break;
                     }
@@ -116,8 +130,20 @@ public class AlarmSettingDialog extends Dialog {
                     }
                     case ALARM_HUMIDITY:{
                         MY_VALUE--;
-                        if(MY_VALUE < 0)MY_VALUE = 0;
+                        if(MY_VALUE < 1)MY_VALUE = 1;
                         mContentView.setText(MY_VALUE+"(%)");
+                        break;
+                    }
+                    case ALARM_TEMPERATURE:{
+                        MY_VALUE--;
+                        if(MY_VALUE < 1)MY_VALUE = 1;
+                        mContentView.setText(MY_VALUE+"(℃)");
+                        break;
+                    }
+                    case ALARM_BODY_HEAT:{
+                        MY_VALUE--;
+                        if(MY_VALUE < 1)MY_VALUE = 1;
+                        mContentView.setText(MY_VALUE+"(℃)");
                         break;
                     }
                 }
@@ -149,6 +175,17 @@ public class AlarmSettingDialog extends Dialog {
                         MainServiceThread.HumidityValue = MY_VALUE;
                         break;
                     }
+                    case ALARM_TEMPERATURE:{
+                        MainServiceThread.IsTemperatureOn = true;
+                        MainServiceThread.TemperatureValue = MY_VALUE;
+                        break;
+                    }
+                    case ALARM_BODY_HEAT:{
+                        MainServiceThread.IsBodyHeatOn = true;
+                        MainServiceThread.BodyHeatValue = MY_VALUE;
+                        break;
+                    }
+
                 }
                 dismiss();
             }
@@ -171,6 +208,7 @@ public class AlarmSettingDialog extends Dialog {
                     case ALARM_HUMIDITY:{
                         break;
                     }
+
                 }
                 dismiss();
             }
@@ -179,12 +217,10 @@ public class AlarmSettingDialog extends Dialog {
         // Default value settings
         switch (MY_ALARM){
             case ALARM_DISTANCE:{
-
                 mContentView.setText(MY_VALUE+"(M)");
                 break;
             }
             case ALARM_HEART_RATE:{
-
                 mContentView.setText(MY_VALUE+"(bpm)");
                 break;
             }
@@ -193,8 +229,15 @@ public class AlarmSettingDialog extends Dialog {
                 break;
             }
             case ALARM_HUMIDITY:{
-
                 mContentView.setText(MY_VALUE+"(%)");
+                break;
+            }
+            case ALARM_TEMPERATURE:{
+                mContentView.setText(MY_VALUE+"(℃)");
+                break;
+            }
+            case ALARM_BODY_HEAT:{
+                mContentView.setText(MY_VALUE+"(℃)");
                 break;
             }
         }

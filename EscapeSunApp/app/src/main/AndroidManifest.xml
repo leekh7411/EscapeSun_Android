@@ -55,7 +55,10 @@
 
         <service android:name=".Service.MainService" />
 
-        <activity android:name=".CallList.AddCallListActivity"
+        <activity
+            android:name=".CallList.AddCallListActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
+        <activity android:name=".DebuggingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             ></activity>
     </application>

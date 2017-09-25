@@ -1,4 +1,6 @@
 package com.example.leekwangho.escapesunapp.Service;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -8,14 +10,19 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUtil;
 import com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid;
+import com.example.leekwangho.escapesunapp.CallList.CallListItem;
 import com.example.leekwangho.escapesunapp.DataReadActivity;
+import com.example.leekwangho.escapesunapp.Database.MainDBHelper;
 import com.example.leekwangho.escapesunapp.GPS.GPSmanager;
 import com.example.leekwangho.escapesunapp.R;
 import com.example.leekwangho.escapesunapp.SMS.Messenger;
@@ -24,11 +31,18 @@ import java.util.UUID;
 
 import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.DISTANCE;
 import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.EMERGENCY;
+import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.LIMIT_BODY_HEAT;
 import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.LIMIT_DISTANCE;
 import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.LIMIT_HEART_RATE;
 import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.LIMIT_HUMIDITY;
+import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.LIMIT_TEMPERATURE;
 import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.MODE_SWITCH;
 import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.MY_SERVICE;
+import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.SENSOR_DATA_CHAR_ARRAY;
+import static com.example.leekwangho.escapesunapp.DataReadActivity.IsActivityRun;
+import static com.example.leekwangho.escapesunapp.DataReadActivity.sensorChart;
+import static com.example.leekwangho.escapesunapp.DebuggingActivity.IsDebug;
+import static com.example.leekwangho.escapesunapp.DebuggingActivity.sensorChart_debug;
 
 /**
  * Created by LeeKwangho on 2017-09-09.
@@ -49,27 +63,48 @@ public class MainServiceThread extends Thread {
     public static boolean IsEmergencyMessageSend = true;
     private final String TAG = "MainService_thread";
     private boolean IsRun = false;
+    private boolean IsShowNotification = false;
+    private ArrayList<String> Noti_Messages01 = new ArrayList<>();
+    private ArrayList<String> Noti_Messages02 = new ArrayList<>();
     private GPSmanager gps_manager;
     private Messenger messenger;
+    private MainDBHelper mainDBHelper = null;
 
     public static boolean IsDistanceOn = false;
     public static boolean IsHeartRateOn =false;
     public static boolean IsHeatScanOn = false;
     public static boolean IsHumidityOn = false;
+    public static boolean IsTemperatureOn = false;
+    public static boolean IsBodyHeatOn = false;
+
     public static boolean IsDistanceOFF = false;
     public static boolean IsHeartRateOFF =false;
     public static boolean IsHeatScanOFF = false;
     public static boolean IsHumidityOFF = false;
+    public static boolean IsTemperatureOFF = false;
+    public static boolean IsBodyHeatOFF = false;
+
     public static int DistanceValue = 0;
     public static int HeartRateValue = 0;
     public static int HumidityValue = 0;
-
+    public static int TemperatureValue = 0;
+    public static int BodyHeatValue = 0;
+    public static boolean WriteSensorForDebugging = false;
 
     public MainServiceThread(Context _mContext){
         IsRun = true;
         mContext = _mContext;
         gps_manager = new GPSmanager(mContext,(LocationManager)mContext.getSystemService(Context.LOCATION_SERVICE));
         messenger = new Messenger(mContext);
+        Noti_Messages01.add(mContext.getResources().getString(R.string.emg_lv01_text00));
+        Noti_Messages01.add(mContext.getResources().getString(R.string.emg_lv01_text01));
+        Noti_Messages01.add(mContext.getResources().getString(R.string.emg_lv01_text02));
+        Noti_Messages01.add(mContext.getResources().getString(R.string.emg_lv01_text03));
+        Noti_Messages02.add(mContext.getResources().getString(R.string.emg_lv02_text00));
+        Noti_Messages02.add(mContext.getResources().getString(R.string.emg_lv02_text01));
+        Noti_Messages02.add(mContext.getResources().getString(R.string.emg_lv02_text02));
+        Noti_Messages02.add(mContext.getResources().getString(R.string.emg_lv02_text03));
+        mainDBHelper = new MainDBHelper(mContext);
         init();
     }
     @Override
@@ -114,77 +149,104 @@ public class MainServiceThread extends Thread {
             IsDistanceOn = false;
             //Log.d(TAG,"Ble를 통해 이동거리 설정 전달");
             MainService.current_mode += (byte)0x01;
-            try{sleep(1000);}catch (Exception e){e.printStackTrace();}
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData((byte)(MainService.current_mode));
             // TODO: 2017-09-18 알람 설정 값 전달 할 것
-            try{sleep(1000);}catch (Exception e){e.printStackTrace();}
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData(LIMIT_DISTANCE,(byte)DistanceValue);
         }
         if(IsHeartRateOn){ // code : 2
             IsHeartRateOn = false;
             //Log.d(TAG,"Ble를 통해 심박수 설정 전달");
             MainService.current_mode += (byte)0x02;
-            try{sleep(1000);}catch (Exception e){e.printStackTrace();}
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData((byte)(MainService.current_mode));
             // TODO: 2017-09-18 알람 설정 값 전달 할 것
-            try{sleep(1000);}catch (Exception e){e.printStackTrace();}
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData(LIMIT_HEART_RATE,(byte)HeartRateValue);
         }
         if(IsHeatScanOn){ // code : 3
             IsHeatScanOn = false;
             MainService.current_mode += (byte)0x04;
             //Log.d(TAG,"Ble를 통해 온열손상 설정 전달");
-            try{sleep(1000);}catch (Exception e){e.printStackTrace();}
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData((byte)(MainService.current_mode));
         }
         if(IsHumidityOn){ // code : 4
             IsHumidityOn = false;
             //Log.d(TAG,"Ble를 통해 습도 설정 전달");
             MainService.current_mode += (byte)0x08;
-            try{sleep(1000);}catch (Exception e){e.printStackTrace();}
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData((byte)(MainService.current_mode));
             // TODO: 2017-09-18 알람 설정 값 전달 할 것
-            try{sleep(1000);}catch (Exception e){e.printStackTrace();}
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData(LIMIT_HUMIDITY,(byte)HumidityValue);
         }
+        if(IsTemperatureOn){
+            IsTemperatureOn = false;
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
+            BLEWriteData(LIMIT_TEMPERATURE,(byte)TemperatureValue);
+        }
+        if(IsBodyHeatOn){
+            IsBodyHeatOn = false;
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
+            BLEWriteData(LIMIT_BODY_HEAT,(byte)BodyHeatValue);
+        }
+
 
         if(IsDistanceOFF){ // code : 1
             IsDistanceOFF = false;
             //Log.d(TAG,"Ble를 통해 이동거리 설정 취소 전달");
             MainService.distance = 0;
             MainService.current_mode -= (byte)0x01;
-            try{sleep(1000);}catch (Exception e){e.printStackTrace();}
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData((byte)(MainService.current_mode));
             // TODO: 2017-09-18 알람 설정 초기화 전달 할 것
-            try{sleep(1000);}catch (Exception e){e.printStackTrace();}
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData(LIMIT_DISTANCE,(byte)0);
         }
         if(IsHeartRateOFF){ // code : 2
             IsHeartRateOFF = false;
             //Log.d(TAG,"Ble를 통해 심박수 설정 취소 전달");
             MainService.current_mode -= (byte)0x02;
-            try{sleep(1000);}catch (Exception e){e.printStackTrace();}
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData((byte)(MainService.current_mode));
             // TODO: 2017-09-18 알람 설정 초기화 전달 할 것
-            try{sleep(1000);}catch (Exception e){e.printStackTrace();}
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData(LIMIT_HEART_RATE,(byte)0);
         }
         if(IsHeatScanOFF){ // code : 3
             IsHeatScanOFF = false;
             //Log.d(TAG,"Ble를 통해 온열손상 설정 취소 전달");
             MainService.current_mode -= (byte)0x04;
-            try{sleep(1000);}catch (Exception e){e.printStackTrace();}
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData((byte)(MainService.current_mode));
         }
         if(IsHumidityOFF){ // code : 4
             IsHumidityOFF = false;
             //Log.d(TAG,"Ble를 통해 습도 설정 취소 전달");
             MainService.current_mode -= (byte)0x08;
-            try{sleep(1000);}catch (Exception e){e.printStackTrace();}
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData((byte)(MainService.current_mode));
-            // TODO: 2017-09-18 알람 설정 초기화 전달 할 것
-            try{sleep(1000);}catch (Exception e){e.printStackTrace();}
+            // 알람 설정 초기화 전달 할 것
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData(LIMIT_HUMIDITY,(byte)0);
+        }
+        if(IsTemperatureOFF){
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
+            BLEWriteData(LIMIT_TEMPERATURE,(byte)0);
+        }
+        if(IsBodyHeatOFF){
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
+            BLEWriteData(LIMIT_BODY_HEAT,(byte)0);
+        }
+
+
+        if(WriteSensorForDebugging){
+            Log.d(TAG,"WriteSensorForDebugging !!");
+            WriteSensorForDebugging = false;
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
+            BLEWriteDebuggingSensorData();
         }
     }
     public void setThreadRun(boolean IsRun){
@@ -193,15 +255,39 @@ public class MainServiceThread extends Thread {
 
     private void SendEmergencyMessage(){
         IsEmergencyMessageSend = false;
-        //Log.d(TAG,"Location : " + gps_manager.myLocation);
+        ArrayList<CallListItem> items = new ArrayList<>();
+        if(mainDBHelper != null){
+            items = mainDBHelper.__callList_get_all_data_ArrayList();
+        }else items = null;
+
+        if(items != null){
+            // Test 해야함
+            for(int i = 0 ; i < items.size(); i++){
+                try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
+                try {
+                    messenger.Send_MMS_To(
+                            items.get(i).getPhone_number(),
+                            ""
+                                    + "[위치 : " + gps_manager.myLocation + "]"
+                                    + "[체온 : " + "]"
+                                    + "[외부기온 : " + "]"
+                                    + "[습도 : " + "]"
+                                    + "[누적 이동거리 : " + "]"
+                                    + "[예상되는 질환 : " + "]"
+                    );
+                }catch (Exception e){e.printStackTrace();}
+                try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
+            }
+        }
+
+
         try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
-        messenger.Send_MMS_To("01062429674","애국가 1절 " + gps_manager.myLocation + " 도옹해애무울과 배액" +
-                "두~산이 마아~르고 닳~~~도록 . .  하아아느님--이 보오-우하사 우-우리 나라 만세");
+        messenger.Send_MMS_To("01094118874","위치 : " + gps_manager.myLocation + " / ");
         Log.d(TAG,"Location SMS send complete to 럼상");
         try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
-        messenger.Send_MMS_To("01055760452","애국가 2절 " + gps_manager.myLocation + " 나아암사안 위에 저 쏘오나무" +
+        /*messenger.Send_MMS_To("01055760452","애국가 2절 " + gps_manager.myLocation + " 나아암사안 위에 저 쏘오나무" +
                 "처얼가블 두우른드읏 바람서어리 부울벼언하암은 우우리 기상일세");
-        Log.d(TAG,"Location SMS send complete to 건민");
+        Log.d(TAG,"Location SMS send complete to 건민");*/
         try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
     }
 
@@ -269,9 +355,7 @@ public class MainServiceThread extends Thread {
                 mStatus = newState;
 
             }
-        }
-
-        ;
+        };
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
@@ -312,17 +396,84 @@ public class MainServiceThread extends Thread {
                         .equalsIgnoreCase(characteristic.getUuid().toString())) {
                     int val = readIntCharacteristicData(characteristic);
                     Log.d(TAG, "Read EMERGENCY VALUE : " + val);
-                    if(val == 119){
-                        // TODO: 2017-09-18 긴급 상황 문자 전송 여기서!
-                        IsEmergencyMessageSend = true;
-                        try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
-                        BLEWriteData(EMERGENCY,(byte)0);
-                        try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
-                    }else if(val == 10){
-                        // TODO: 2017-09-18 거리 제한 초과 시
+                    int level01 = val % 10;
+                    int level02 = (val % 100 - level01)/10;
 
-                    }else if(val == 20){
-                        // // TODO: 2017-09-19 심박수 제한 초과 시?
+                    switch (level01){
+                        case 0:{
+                            IsShowNotification = true;
+                            String msg = mContext.getResources().getString(R.string.emg_lv01_text00);
+                            //DataReadActivity.heatScan_text01.setText(msg);
+                            SetTextView(msg,-1,DataReadActivity.heatScan_text01);
+                            break;
+                        }
+                        case 1:{
+                            IsShowNotification = true;
+                            String msg = mContext.getResources().getString(R.string.emg_lv01_text01);
+                            //DataReadActivity.heatScan_text01.setText(msg);
+                            SetTextView(msg,-1,DataReadActivity.heatScan_text01);
+                            break;
+                        }
+                        case 2:{
+                            IsShowNotification = true;
+                            String msg = mContext.getResources().getString(R.string.emg_lv01_text02);
+                            //DataReadActivity.heatScan_text01.setText(msg);
+                            SetTextView(msg,-1,DataReadActivity.heatScan_text01);
+                            break;
+                        }
+                        case 3:{
+                            IsShowNotification = true;
+                            String msg = mContext.getResources().getString(R.string.emg_lv01_text03);
+                            //DataReadActivity.heatScan_text01.setText(msg);
+                            SetTextView(msg,-1,DataReadActivity.heatScan_text01);
+                            break;
+                        }
+                    }
+
+                    switch (level02){
+                        case 0:{
+                            IsShowNotification = true;
+                            String msg = mContext.getResources().getString(R.string.emg_lv02_text00);
+                            //DataReadActivity.heatScan_text02.setText(msg);
+                            SetTextView(msg,-1,DataReadActivity.heatScan_text02);
+                            break;
+                        }
+                        case 1:{
+                            IsShowNotification = true;
+                            String msg = mContext.getResources().getString(R.string.emg_lv02_text01);
+                            //DataReadActivity.heatScan_text02.setText(msg);
+                            SetTextView(msg,-1,DataReadActivity.heatScan_text02);
+                            break;
+                        }
+                        case 2:{
+                            IsShowNotification = true;
+                            String msg = mContext.getResources().getString(R.string.emg_lv02_text02);
+                            //DataReadActivity.heatScan_text02.setText(msg);
+                            SetTextView(msg,-1,DataReadActivity.heatScan_text02);
+                            break;
+                        }
+                        case 3:{
+                            IsShowNotification = true;
+                            String msg = mContext.getResources().getString(R.string.emg_lv02_text03);
+                            //DataReadActivity.heatScan_text02.setText(msg);
+                            SetTextView(msg,-1,DataReadActivity.heatScan_text02);
+                            // TODO: 2017-09-18 긴급 상황 문자 전송 여기서!
+                            IsEmergencyMessageSend = true;
+                            try{Thread.sleep(400);}catch (Exception e){e.printStackTrace();}
+                            BLEWriteData(EMERGENCY,(byte)(val-10));
+                            try{Thread.sleep(400);}catch (Exception e){e.printStackTrace();}
+                            break;
+                        }
+                    }
+
+                    //Notification(Test)
+                    if(level01 >= 0 && level01 < 4 && level02 >= 0 && level02 < 4 && IsShowNotification){
+                        ShowNotification(
+                                Noti_Messages01.get(level01),
+                                Noti_Messages02.get(level02),
+                                0
+                        );
+                        IsShowNotification = false;
                     }
                 }
                 if (MODE_SWITCH
@@ -337,14 +488,18 @@ public class MainServiceThread extends Thread {
                     if(val > 0){
                         characteristic.setValue(new byte[] { (byte) 0x00 });
                         mConnGatt.writeCharacteristic(characteristic);
-                        MainService.distance += val;
+                        MainService.distance = val;
                         Log.d(TAG,"누적 이동거리 [DISTANCE] : " + MainService.distance+ " (M)");
                     }else{
                         Log.d(TAG,"[DISTANCE NOT CHANGED] / CUR : " + MainService.distance + " (M)");
                     }
 
-
+                    if(DataReadActivity.IsActivityRun) {
+                        SensorAsyncTask task0 = new SensorAsyncTask( MainService.distance , DataReadActivity.distance, "DISTANCE");
+                        task0.execute();
+                    }
                 }
+
                 if (BleUuid.SENSOR_DATA_CHAR_ARRAY.equalsIgnoreCase(characteristic.getUuid().toString())) { // Testing
 
                     ArrayList<Integer> datas = readCharacteristicDataArray(characteristic, 4);
@@ -370,7 +525,7 @@ public class MainServiceThread extends Thread {
                     }
 
                     try {
-                        Thread.sleep(300);
+                        Thread.sleep(150);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -393,6 +548,7 @@ public class MainServiceThread extends Thread {
                     int val = readIntCharacteristicData(characteristic);
                     Log.d(TAG, "LIMIT_HUMIDITY VALUE : " + val);
                 }
+
 
 
             } else {
@@ -439,6 +595,10 @@ public class MainServiceThread extends Thread {
     /**
      * Created by leekwangho on 17. 2. 24.
      **/
+    private void SetTextView(String msg,int val,TextView textView){
+        SensorAsyncTask task = new SensorAsyncTask(val,textView,msg);
+        task.execute();
+    }
     public class SensorAsyncTask extends AsyncTask<Integer, Integer, Integer>{
         TextView sensor;
         int value;
@@ -466,9 +626,15 @@ public class MainServiceThread extends Thread {
         }
 
         @Override
-        protected void onPostExecute(Integer result) {
+        protected void onPostExecute(Integer result){
             super.onPostExecute(result);
-            sensor.setText(TAG + value);
+            if(TAG.equals("DISTANCE")){
+                sensor.setText("설정된 값 없음, 누적 이동거리 : " + (float)(value * 0.8) + "(M)");
+            }else{
+                if(value == -1)sensor.setText(TAG);
+                else sensor.setText(TAG + value);
+            }
+
         }
     }
 
@@ -557,41 +723,61 @@ public class MainServiceThread extends Thread {
 
                 try {
                     // Read Sensor data
-                    Thread.sleep(1000);
+                    Thread.sleep(400);
                     if (!BLEReadData((service_uuid), (sensor_uuid))) {
                         Log.d(TAG, "Error Occurred! Reinitializing start !..");
                         if (BleUtil.selectedDevice != null) {
                             BLEInit();
                         }
                         try {
-                            Thread.sleep(4000);
+                            Thread.sleep(2000);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
 
                     // Read Distance data
-                    Thread.sleep(1000);
+                    Thread.sleep(400);
                     //Log.d(TAG,"[DISTANCE] start!");
                     BLEReadData(service_uuid,DISTANCE);
 
                     // Read Mode data
-                    Thread.sleep(1000);
+                    Thread.sleep(400);
                     BLEReadData(service_uuid,MODE_SWITCH);
 
                     // Read Emergency Data
-                    Thread.sleep(1000);
+                    Thread.sleep(400);
                     BLEReadData(service_uuid,EMERGENCY);
 
                     // Read LIMIT DATA
-                    Thread.sleep(1000);
+                    Thread.sleep(400);
                     BLEReadData(service_uuid,LIMIT_DISTANCE);
-                    Thread.sleep(1000);
+                    Thread.sleep(400);
                     BLEReadData(service_uuid,LIMIT_HEART_RATE);
-                    Thread.sleep(1000);
+                    Thread.sleep(400);
                     BLEReadData(service_uuid,LIMIT_HUMIDITY);
 
-                } catch (Exception e) {
+                    // Charting
+                    if(IsActivityRun){
+                        sensorChart.AddEntry(
+                                MainService.temperature,
+                                MainService.body_heat,
+                                MainService.heart_rate,
+                                MainService.humidity,
+                                MainService.distance
+                        );
+                    }
+
+                    if(IsDebug){
+                        sensorChart_debug.AddEntry(
+                                MainService.temperature,
+                                MainService.body_heat,
+                                MainService.heart_rate,
+                                MainService.humidity,
+                                MainService.distance
+                        );
+                    }
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -599,7 +785,7 @@ public class MainServiceThread extends Thread {
         }
 
     }
-    private boolean BLEWriteData(String sensor_uuid,byte value){
+    private boolean BLEWriteDebuggingSensorData(){
         if(mConnGatt == null){
             Log.d(TAG, "BLEWriteData Failed");
             return false;
@@ -611,16 +797,38 @@ public class MainServiceThread extends Thread {
             IsBLEInit = false;
             return false;
         }
+        BluetoothGattCharacteristic characteristic = disService.getCharacteristic(UUID.fromString(SENSOR_DATA_CHAR_ARRAY));
+        if (characteristic == null){
+            Log.d(TAG, "-> Charateristic not found!");
+            return false;
+        }
+        characteristic.setValue(new byte[] { (byte)MainService.temperature, (byte)MainService.body_heat, (byte)MainService.heart_rate, (byte)MainService.humidity });
+        if (mConnGatt.writeCharacteristic(characteristic)) {
+
+        }
+        Log.d(TAG, "-> BLEWriteDebuggingSensorData() --> Write Success!");
+        return true;
+    }
+    private boolean BLEWriteData(String sensor_uuid,byte value){
+        if(mConnGatt == null){
+            Log.d(TAG, "BLEWriteData Failed");
+            return false;
+        }
+        BluetoothGattService disService = mConnGatt.getService(UUID.fromString(MY_SERVICE));
+        if (disService == null){
+            Log.d(TAG, "-> Dis service not found!");
+            IsBLEInit = false;
+            return false;
+        }
         BluetoothGattCharacteristic characteristic = disService.getCharacteristic(UUID.fromString(sensor_uuid));
-        if (characteristic == null) {
+        if (characteristic == null){
             Log.d(TAG, "-> Charateristic not found!");
             return false;
         }
         characteristic.setValue(new byte[] { value });
-        if (mConnGatt.writeCharacteristic(characteristic)) {
+        if (mConnGatt.writeCharacteristic(characteristic)){
 
         }
-        //Log.d(TAG, "-> Write Success!");
         return true;
     }
 
@@ -632,42 +840,39 @@ public class MainServiceThread extends Thread {
         }
         BluetoothGattService disService = mConnGatt.getService(UUID.fromString(MY_SERVICE));
         //Log.d(TAG, "BLEWriteData Start !");
-        if (disService == null) {
+        if (disService == null){
             Log.d(TAG, "-> Dis service not found!");
             IsBLEInit = false;
             return false;
         }
         BluetoothGattCharacteristic characteristic = disService.getCharacteristic(UUID.fromString(MODE_SWITCH));
-        if (characteristic == null) {
+        if (characteristic == null){
             Log.d(TAG, "-> Charateristic not found!");
             return false;
         }
         characteristic.setValue(new byte[] { (byte) value });
-        if (mConnGatt.writeCharacteristic(characteristic)) {
+        if (mConnGatt.writeCharacteristic(characteristic)){
 
         }
-        //Log.d(TAG, "-> Write Success!");
         return true;
     }
-    private boolean BLEReadData(String service_uuid, String sensor_uuid) {
+
+    private boolean BLEReadData(String service_uuid, String sensor_uuid){
         if(mConnGatt == null){
-            //printToast("Please read after Scan and refresh!");
             SensorReadThreadFlag = false;
             return false;
         }
         BluetoothGattService disService = mConnGatt.getService(UUID.fromString(service_uuid));
-        //Log.d(TAG, "BLEReadData Start !");
 
-        if (disService == null) {
+        if (disService == null){
             Log.d(TAG, "Dis service not found!");
-            //printToast("Dis service not found!");
             IsBLEInit = false;
             return false;
         }
 
 
         BluetoothGattCharacteristic characteristic = disService.getCharacteristic(UUID.fromString(sensor_uuid));
-        if (characteristic == null) {
+        if (characteristic == null){
             Log.d(TAG, "Charateristic not found!");
             //printToast("Charateristic not found!");
             IsBLEInit = false;
@@ -682,12 +887,27 @@ public class MainServiceThread extends Thread {
             IsBLEInit = false;
             return false;
         }
-
         return true;
     }
 
-    public void printToast(String msg) {
+    public void printToast(String msg){
         ToastAsyncTask task = new ToastAsyncTask(msg);
         task.execute();
+    }
+
+    private void ShowNotification(String title,String msg,int ID){
+        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.ic_menu_gallery);
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(mContext)
+                .setSmallIcon(R.drawable.ic_menu_gallery)
+                .setContentTitle(title)
+                .setContentText(msg).setStyle(new NotificationCompat.BigTextStyle().bigText(title))
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setLargeIcon(bitmap)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+        NotificationManager manager =
+                (NotificationManager)mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(ID,builder.build());
     }
 }

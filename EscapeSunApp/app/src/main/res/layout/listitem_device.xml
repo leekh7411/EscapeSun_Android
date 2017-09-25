@@ -19,25 +19,53 @@
     android:background="@color/colorMyCpText"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/device_name"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/background_light"
-        android:paddingBottom="3dp"
-        android:paddingLeft="20dp"
-        android:paddingTop="3dp"
-        android:textColor="@android:color/black"
-        android:textSize="24dp" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/device_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/background_light"
+            android:paddingBottom="3dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="3dp"
+            android:text="Device_name"
+            android:textColor="@android:color/black"
+            android:textSize="24dp" />
+
+        <TextView
+            android:id="@+id/device_rssi"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/background_light"
+            android:gravity="right|center"
+            android:paddingBottom="3dp"
+            android:paddingRight="20dp"
+            android:paddingTop="3dp"
+            android:text="Address"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12dp" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/device_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:background="@android:color/background_light"
+        android:gravity="right"
         android:paddingBottom="3dp"
-        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:paddingTop="3dp"
+        android:text="RSSI"
         android:textColor="@android:color/darker_gray"
         android:textSize="12dp" />
+
 </LinearLayout>

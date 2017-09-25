@@ -26,6 +26,8 @@ public class BleUuid {
     public static final String LIMIT_DISTANCE = "19B10011-E8F2-537E-4F6C-D104768A1214";
     public static final String LIMIT_HEART_RATE = "19B10012-E8F2-537E-4F6C-D104768A1214";
     public static final String LIMIT_HUMIDITY = "19B10013-E8F2-537E-4F6C-D104768A1214";
+    public static final String LIMIT_TEMPERATURE = "19B10014-E8F2-537E-4F6C-D104768A1214";
+    public static final String LIMIT_BODY_HEAT = "19B10015-E8F2-537E-4F6C-D104768A1214";
     public static final String DISTANCE = "19B10002-E8F2-537E-4F6C-D104768A1214";
     public static final String EMERGENCY  = "19B10003-E8F2-537E-4F6C-D104768A1214";
     public static final String SENSOR_DATA_CHAR_ARRAY = "19B10006-E8F2-537E-4F6C-D104768A1214";

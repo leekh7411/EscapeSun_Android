@@ -20,38 +20,37 @@ import java.util.List;
  * Created by root on 17. 7. 13.
  */
 
-public class DeviceAdapter extends ArrayAdapter<ScannedDevice> {
+public class DeviceAdapter extends ArrayAdapter<ScannedDevice>{
     private static final String PREFIX_RSSI = "RSSI:";
     private List<ScannedDevice> mList;
     private LayoutInflater mInflater;
     private int mResId;
     private final String TAG = "DeviceAdapter";
-    public DeviceAdapter(Context context, int resId, List<ScannedDevice> objects) {
+    public DeviceAdapter(Context context, int resId, List<ScannedDevice> objects){
         super(context, resId, objects);
         mResId = resId;
         mList = objects;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent){
         ScannedDevice item = (ScannedDevice) getItem(position);
-
-        if (convertView == null) {
+        if (convertView == null){
             convertView = mInflater.inflate(mResId, null);
         }
         TextView name = (TextView) convertView.findViewById(R.id.device_name);
         name.setText(item.getDisplayName());
         TextView address = (TextView) convertView.findViewById(R.id.device_address);
         address.setText(item.getDevice().getAddress());
-        TextView rssi = (TextView) convertView.findViewById(R.id.device_address);
+        TextView rssi = (TextView) convertView.findViewById(R.id.device_rssi);
         rssi.setText(PREFIX_RSSI + Integer.toString(item.getRssi()));
 
         return convertView;
     }
 
     /** add or update BluetoothDevice */
-    public void update(BluetoothDevice newDevice, int rssi, byte[] scanRecord) {
-        if ((newDevice == null) || (newDevice.getAddress() == null)) {
+    public void update(BluetoothDevice newDevice, int rssi, byte[] scanRecord){
+        if ((newDevice == null) || (newDevice.getAddress() == null)){
             return;
         }
 
@@ -70,7 +69,8 @@ public class DeviceAdapter extends ArrayAdapter<ScannedDevice> {
                 break;
             }
         }
-        if (!contains) {
+
+        if (!contains){
             // add new BluetoothDevice
             ScannedDevice device = new ScannedDevice(newDevice, rssi);
             if(device.getDisplayName().equals("SUN")){

@@ -190,5 +190,17 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    
+    <string name="emg_lv01_text">위험 상황 발생 시 부저가 울리며 사용자 반응이 없을 경우 긴급 문자 메시지를 자동으로 전송합니다</string>
+    <string name="emg_lv01_text00">야외활동을 하기 좋은 날입니다</string>
+    <string name="emg_lv01_text01">온열질환에 약간의 위험이 있습니다. 열경련이나 열실신이 의심되니 쉬면서 다니세요!</string>
+    <string name="emg_lv01_text02">더운 날씨에 너무 오래 야외에 있으신건 아닌가요? 일사병이 발생 할 수 있으니 조금 쉬시는걸 추천합니다</string>
+    <string name="emg_lv01_text03">외부 환경과 신체지수가 많이 위험해 보입니다. 열사병의 위험이 있으니 조심하셔야 합니다!</string>
+
+    <string name="emg_lv02_text">현 상황에서 특이사항 없음</string>
+    <string name="emg_lv02_text00">지금 처럼 쉬어주면 온열 질환을 예방할 수 있습니다</string>
+    <string name="emg_lv02_text01">계속 움직이시면 위험할 수도 있어요.</string>
+    <string name="emg_lv02_text02">좀 더 시원한 곳에서 쉬시는걸 추천합니다. 하지만 지금 의식이 있으신지 의심됩니다. 버저 버튼을 눌러주세요!</string>
+    <string name="emg_lv02_text03">버저 버튼이 30초간 눌러지지 않아 긴급 구조 문자가 발송되었습니다. 지금 몸에 이상이 있으시다면 꼭 쉬어야 합니다.</string>
 
 </resources>

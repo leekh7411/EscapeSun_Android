@@ -7,47 +7,42 @@ import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.leekwangho.escapesunapp.CallList.CallListActivity;
+import com.example.leekwangho.escapesunapp.Chart.SensorChart;
 import com.example.leekwangho.escapesunapp.Database.SharedPreferenceUtil;
 import com.example.leekwangho.escapesunapp.Dialog.AlarmSettingDialog;
 import com.example.leekwangho.escapesunapp.Service.MainService;
 import com.example.leekwangho.escapesunapp.Service.MainServiceThread;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+
+import java.util.ArrayList;
 
 public class DataReadActivity extends Activity {
     private TextView title;
-    public static TextView temperature,body_temp,heart_rate,humidity;
+    public static TextView temperature,body_temp,heart_rate,humidity,distance;
+    public static TextView heatScan_text01,heatScan_text02;
     private ImageButton callListBTN,bleBTN,refreshBTN;
-    private Switch alarm_distance,alarm_heart_rate,alarm_heat,alarm_humidity,service_switch;
+    private Button debugBTN;
+    private Switch alarm_distance,alarm_heart_rate,alarm_heat,alarm_humidity,service_switch,alarm_temperature,alarm_body_heat;
     private Intent serviceIntent = null;
     private SharedPreferenceUtil sharedPreferenceUtil;
     public static boolean IsActivityRun = false;
-    @Override
-    protected void onResume() {
-        super.onResume();
-        IsActivityRun = true;
-    }
-    @Override
-    protected void onPause() {
-        super.onPause();
-        IsActivityRun = false;
-    }
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        IsActivityRun = true;
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        IsActivityRun = false;
-    }
-
+    public static ArrayList<Entry> sensorChartDatas01;
+    public static Activity mActivity;
+    public static SensorChart sensorChart;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,10 +53,13 @@ public class DataReadActivity extends Activity {
         } else {
             // Already Granted
         }
+        mActivity = this;
         sharedPreferenceUtil = new SharedPreferenceUtil(DataReadActivity.this);
         IsActivityRun = true;
         title = findViewById(R.id.titleText);
-        title.setText(MainService.selectedDevice.getDisplayName() + " " + MainService.selectedBleDevice.getAddress());
+        if(MainService.selectedDevice != null && MainService.selectedBleDevice != null){
+            title.setText(MainService.selectedDevice.getDisplayName() + " " + MainService.selectedBleDevice.getAddress());
+        }
         callListBTN = (ImageButton)findViewById(R.id.callListBTN);
         callListBTN.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,13 +85,30 @@ public class DataReadActivity extends Activity {
         body_temp = (TextView)findViewById(R.id.sensor_value_BodyTemp);
         heart_rate = (TextView)findViewById(R.id.sensor_value_HeartRate);
         humidity = (TextView)findViewById(R.id.sensor_value_Humidity);
+        distance = findViewById(R.id.alarm_distance_text);
+        debugBTN = findViewById(R.id.debuggingBTN);
+        debugBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goDebugMode();
+            }
+        });
+        heatScan_text01 = findViewById(R.id.alarm_heat_text01);
+        heatScan_text02 = findViewById(R.id.alarm_heat_text02);
+        sensorChart = new SensorChart(mActivity,R.id.sensor_chart,R.id.SensorCharts);
+        sensorChart.AddEntry(10,10,10,10,10);
 
         // Switch
         if(sharedPreferenceUtil.getData("Is_distance_value").equals("null"))sharedPreferenceUtil.setData("Is_distance_value","0");
         if(sharedPreferenceUtil.getData("Is_heart_rate_value").equals("null"))sharedPreferenceUtil.setData("Is_heart_rate_value","0");
         if(sharedPreferenceUtil.getData("Is_humidity_value").equals("null"))sharedPreferenceUtil.setData("Is_humidity_value","0");
+        if(sharedPreferenceUtil.getData("Is_temperature_value").equals("null"))sharedPreferenceUtil.setData("Is_temperature_value","0");
+        if(sharedPreferenceUtil.getData("Is_body_heat_value").equals("null"))sharedPreferenceUtil.setData("Is_body_heat_value","0");
         switchInit();
     }
+
+
+
     private void switchInit(){
         alarm_distance = (Switch)findViewById(R.id.alarm_distance_switch);
         alarm_distance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -143,10 +158,14 @@ public class DataReadActivity extends Activity {
                     sharedPreferenceUtil.setData("heat","on");
                     MainServiceThread.IsHeatScanOn = true;
                     Toast.makeText(getApplicationContext(),"Heat scan ON",Toast.LENGTH_SHORT).show();
+                    sensorChart.setVisible(true);
                 }else{
                     sharedPreferenceUtil.setData("heat","off");
                     MainServiceThread.IsHeatScanOFF = true;
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
+                    heatScan_text01.setText(getResources().getString(R.string.emg_lv01_text));
+                    heatScan_text02.setText(getResources().getString(R.string.emg_lv02_text));
+                    sensorChart.setVisible(false);
                 }
             }
         });
@@ -183,11 +202,59 @@ public class DataReadActivity extends Activity {
             }
         });
 
+        ///
+        alarm_temperature = findViewById(R.id.alarm_temperature_switch);
+        alarm_temperature.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    sharedPreferenceUtil.setData("temperature","on");
+                    if(sharedPreferenceUtil.getData("Is_temperature_value").equals("0")){
+                        AlarmSettingDialog dialog = new AlarmSettingDialog(
+                                DataReadActivity.this,"외부 온도 알람 기준을 정하세요", AlarmSettingDialog.ALARM_TEMPERATURE);
+                        dialog.show();
+                    }
+                }else{
+                    sharedPreferenceUtil.setData("temperature","off");
+                    MainServiceThread.IsTemperatureOFF = true;
+                    Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        alarm_body_heat = findViewById(R.id.alarm_bodyheat_switch);
+        alarm_body_heat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    sharedPreferenceUtil.setData("body_heat","on");
+                    if(sharedPreferenceUtil.getData("Is_body_heat_value").equals("0")){
+                        AlarmSettingDialog dialog = new AlarmSettingDialog(
+                                DataReadActivity.this,"체온 알람 기준을 정하세요", AlarmSettingDialog.ALARM_BODY_HEAT);
+                        dialog.show();
+                    }
+                }else{
+                    sharedPreferenceUtil.setData("body_heat","off");
+                    MainServiceThread.IsBodyHeatOFF = true;
+                    Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        ///
+
         if(sharedPreferenceUtil.getData("distance").equals("on"))alarm_distance.setChecked(true);
         if(sharedPreferenceUtil.getData("heart_rate").equals("on"))alarm_heart_rate.setChecked(true);
-        if(sharedPreferenceUtil.getData("heat").equals("on"))alarm_heat.setChecked(true);
+        if(sharedPreferenceUtil.getData("heat").equals("on")){
+            alarm_heat.setChecked(true);
+            sensorChart.setVisible(true);
+        }else{
+            sensorChart.setVisible(false);
+        }
         if(sharedPreferenceUtil.getData("humidity").equals("on"))alarm_humidity.setChecked(true);
         if(sharedPreferenceUtil.getData("service").equals("on"))service_switch.setChecked(true);
+        if(sharedPreferenceUtil.getData("temperature").equals("on"))alarm_temperature.setChecked(true);
+        if(sharedPreferenceUtil.getData("body_heat").equals("on"))alarm_body_heat.setChecked(true);
+
 
     }
 
@@ -222,6 +289,12 @@ public class DataReadActivity extends Activity {
         startActivity(intent);
         overridePendingTransition(R.anim.translate_right_in,R.anim.translate_left_out);
     }
+    private void goDebugMode(){
+        Intent intent = new Intent(getApplicationContext(),DebuggingActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.translate_right_in,R.anim.translate_left_out);
+    }
+
     /**
      * Permission codes ****************************************************************************
      * */
@@ -318,5 +391,26 @@ public class DataReadActivity extends Activity {
             }
 
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IsActivityRun = true;
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        IsActivityRun = false;
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        IsActivityRun = true;
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        IsActivityRun = false;
     }
 }
