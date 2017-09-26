@@ -70,7 +70,7 @@ public class SensorChart {
         chart.invalidate();
     }
 
-    public void AddEntry(int temp,int body,int heart,int humi,int dist){
+    public void AddEntry(int temp,int body,int heart,int humi,float dist){
         data = chart.getData();
         data_Temperature.add(new Entry(temp,data_Temperature.size()));
         data_BodyHeat.add(new Entry(body,data_BodyHeat.size()));

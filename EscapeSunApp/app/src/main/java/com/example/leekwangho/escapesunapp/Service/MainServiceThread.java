@@ -16,6 +16,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUtil;
@@ -40,6 +41,11 @@ import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.MODE_SWI
 import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.MY_SERVICE;
 import static com.example.leekwangho.escapesunapp.BLEMenu.Utils.BleUuid.SENSOR_DATA_CHAR_ARRAY;
 import static com.example.leekwangho.escapesunapp.DataReadActivity.IsActivityRun;
+import static com.example.leekwangho.escapesunapp.DataReadActivity.alarm_body_heat;
+import static com.example.leekwangho.escapesunapp.DataReadActivity.alarm_distance;
+import static com.example.leekwangho.escapesunapp.DataReadActivity.alarm_humidity;
+import static com.example.leekwangho.escapesunapp.DataReadActivity.alarm_temperature;
+import static com.example.leekwangho.escapesunapp.DataReadActivity.distance;
 import static com.example.leekwangho.escapesunapp.DataReadActivity.sensorChart;
 import static com.example.leekwangho.escapesunapp.DebuggingActivity.IsDebug;
 import static com.example.leekwangho.escapesunapp.DebuggingActivity.sensorChart_debug;
@@ -66,6 +72,8 @@ public class MainServiceThread extends Thread {
     private boolean IsShowNotification = false;
     private ArrayList<String> Noti_Messages01 = new ArrayList<>();
     private ArrayList<String> Noti_Messages02 = new ArrayList<>();
+    private ArrayList<String> EMG_Messages =  new ArrayList<>();
+    private int Level_01 = 0;
     private GPSmanager gps_manager;
     private Messenger messenger;
     private MainDBHelper mainDBHelper = null;
@@ -104,6 +112,9 @@ public class MainServiceThread extends Thread {
         Noti_Messages02.add(mContext.getResources().getString(R.string.emg_lv02_text01));
         Noti_Messages02.add(mContext.getResources().getString(R.string.emg_lv02_text02));
         Noti_Messages02.add(mContext.getResources().getString(R.string.emg_lv02_text03));
+        EMG_Messages.add(mContext.getResources().getString(R.string.emg_lv01_msg01));
+        EMG_Messages.add(mContext.getResources().getString(R.string.emg_lv01_msg02));
+        EMG_Messages.add(mContext.getResources().getString(R.string.emg_lv01_msg03));
         mainDBHelper = new MainDBHelper(mContext);
         init();
     }
@@ -204,6 +215,9 @@ public class MainServiceThread extends Thread {
             // TODO: 2017-09-18 알람 설정 초기화 전달 할 것
             try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData(LIMIT_DISTANCE,(byte)0);
+            try{sleep(300);}catch (Exception e){e.printStackTrace();}
+            BLEWriteData(DISTANCE,(byte)0);
+            try{sleep(50);}catch (Exception e){e.printStackTrace();}
         }
         if(IsHeartRateOFF){ // code : 2
             IsHeartRateOFF = false;
@@ -265,30 +279,35 @@ public class MainServiceThread extends Thread {
             for(int i = 0 ; i < items.size(); i++){
                 try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
                 try {
-                    messenger.Send_MMS_To(
-                            items.get(i).getPhone_number(),
-                            ""
-                                    + "[위치 : " + gps_manager.myLocation + "]"
-                                    + "[체온 : " + "]"
-                                    + "[외부기온 : " + "]"
-                                    + "[습도 : " + "]"
-                                    + "[누적 이동거리 : " + "]"
-                                    + "[예상되는 질환 : " + "]"
-                    );
+                    if(Level_01 < 0 || Level_01 > 2){
+                        messenger.Send_MMS_To(
+                                items.get(i).getPhone_number(),
+                                ""
+                                        + "[위치 : " + gps_manager.myLocation + "]"
+                                        + "[체온 : " + MainService.body_heat+"]"
+                                        + "[외부기온 : "+MainService.temperature + "]"
+                                        + "[습도 : " + MainService.humidity+"]"
+                                        + "[누적 이동거리 : " +MainService.distance+ "]"
+                                        + " 즉시 도움 부탁드립니다!"
+                        );
+                    }else{
+                        messenger.Send_MMS_To(
+                                items.get(i).getPhone_number(),
+                                ""
+                                        + "[위치 : " + gps_manager.myLocation + "]"
+                                        + "[체온 : " + MainService.body_heat+"]"
+                                        + "[외부기온 : "+MainService.temperature + "]"
+                                        + "[습도 : " + MainService.humidity+"]"
+                                        + "[누적 이동거리 : " +MainService.distance+ "]"
+                                        + "[예상되는 질환 : " +EMG_Messages.get(Level_01)+"]"
+                                        + " 즉시 도움 부탁드립니다!"
+                        );
+                    }
+
                 }catch (Exception e){e.printStackTrace();}
                 try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
             }
         }
-
-
-        try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
-        messenger.Send_MMS_To("01094118874","위치 : " + gps_manager.myLocation + " / ");
-        Log.d(TAG,"Location SMS send complete to 럼상");
-        try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
-        /*messenger.Send_MMS_To("01055760452","애국가 2절 " + gps_manager.myLocation + " 나아암사안 위에 저 쏘오나무" +
-                "처얼가블 두우른드읏 바람서어리 부울벼언하암은 우우리 기상일세");
-        Log.d(TAG,"Location SMS send complete to 건민");*/
-        try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
     }
 
     /*---------------------------------------------------------------------------------------------*/
@@ -397,6 +416,7 @@ public class MainServiceThread extends Thread {
                     int val = readIntCharacteristicData(characteristic);
                     Log.d(TAG, "Read EMERGENCY VALUE : " + val);
                     int level01 = val % 10;
+                    Level_01 = level01;
                     int level02 = (val % 100 - level01)/10;
 
                     switch (level01){
@@ -637,6 +657,39 @@ public class MainServiceThread extends Thread {
 
         }
     }
+    private void setSwitchAsyncTask(boolean b,Switch s){
+        SwitchAsyncTask task = new SwitchAsyncTask(b,s);
+        task.execute();
+    }
+    private class SwitchAsyncTask extends AsyncTask<Integer, Integer, Integer>{
+        Switch aSwitch;
+        boolean value;
+        public SwitchAsyncTask(boolean val, Switch s0){
+            aSwitch = s0;
+            value = val;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Integer doInBackground(Integer... integers) {
+            return 0;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... params) {
+
+        }
+
+        @Override
+        protected void onPostExecute(Integer result){
+            super.onPostExecute(result);
+            aSwitch.setChecked(value);
+        }
+    }
 
     public class ReadDataAsyncTask extends AsyncTask<Integer, Integer, Integer> {
         String service_uuid, sensor_uuid;
@@ -764,7 +817,7 @@ public class MainServiceThread extends Thread {
                                 MainService.body_heat,
                                 MainService.heart_rate,
                                 MainService.humidity,
-                                MainService.distance
+                                (float)(MainService.distance * 0.8)
                         );
                     }
 
@@ -777,6 +830,10 @@ public class MainServiceThread extends Thread {
                                 MainService.distance
                         );
                     }
+
+                    // Checking the alarm limit!
+                    CheckLimitValues();
+
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -785,6 +842,35 @@ public class MainServiceThread extends Thread {
         }
 
     }
+
+    private void CheckLimitValues(){
+        if(DistanceValue != 0 && DistanceValue < MainService.distance){
+            ShowNotification("이동거리 알람",DistanceValue + "(M)가 초과 되었습니다.",1);
+            DistanceValue = 0;
+            if(DataReadActivity.alarm_distance != null)setSwitchAsyncTask(false,alarm_distance);
+        }
+
+        if(HumidityValue != 0 && HumidityValue < MainService.humidity){
+            ShowNotification("습도 알람",HumidityValue + "(%)가 초과 되었습니다.",2);
+            HumidityValue = 0;
+            if(DataReadActivity.alarm_humidity != null)setSwitchAsyncTask(false,alarm_humidity);
+        }
+
+        if(TemperatureValue != 0 && TemperatureValue < MainService.temperature){
+            ShowNotification("외부 온도 알람",TemperatureValue + "(℃)가 초과 되었습니다",3);
+            TemperatureValue = 0;
+            if(DataReadActivity.alarm_temperature != null)setSwitchAsyncTask(false,alarm_temperature);
+        }
+
+        if(BodyHeatValue != 0 && BodyHeatValue < MainService.body_heat){
+            ShowNotification("체온 알림",BodyHeatValue + "(℃)가 초과 되었습니다",4);
+            BodyHeatValue = 0 ;
+            if(DataReadActivity.alarm_body_heat != null)setSwitchAsyncTask(false,alarm_body_heat);
+        }
+
+    }
+
+
     private boolean BLEWriteDebuggingSensorData(){
         if(mConnGatt == null){
             Log.d(TAG, "BLEWriteData Failed");
@@ -902,12 +988,13 @@ public class MainServiceThread extends Thread {
                 .setSmallIcon(R.drawable.ic_menu_gallery)
                 .setContentTitle(title)
                 .setContentText(msg).setStyle(new NotificationCompat.BigTextStyle().bigText(title))
-                .setDefaults(Notification.DEFAULT_SOUND)
+                .setDefaults(Notification.DEFAULT_VIBRATE)
                 .setLargeIcon(bitmap)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
         NotificationManager manager =
                 (NotificationManager)mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(ID,builder.build());
+        Log.d(TAG,"ShowNotification finish");
     }
 }

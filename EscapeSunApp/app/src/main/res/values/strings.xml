@@ -9,7 +9,7 @@
     <string name="app_title">태양을 피하고 싶었어</string>
     <string name="app_discription">온열 손상 방지를 위한 IOT</string>
     <string name="device_connect">태피하 연결 시작하기</string>
-    <string name="app_now_searching_device">태피하를 찾는 중 입니다!</string>
+    <string name="app_now_searching_device">기기를 찾는 중 입니다!</string>
     <string name="app_searching_finish">찾았습니다! 바로 연결 가능합니다.</string>
     <string name="app_start">시작하기</string>
     <string name="app_signup">회원가입</string>
@@ -194,8 +194,11 @@
     <string name="emg_lv01_text">위험 상황 발생 시 부저가 울리며 사용자 반응이 없을 경우 긴급 문자 메시지를 자동으로 전송합니다</string>
     <string name="emg_lv01_text00">야외활동을 하기 좋은 날입니다</string>
     <string name="emg_lv01_text01">온열질환에 약간의 위험이 있습니다. 열경련이나 열실신이 의심되니 쉬면서 다니세요!</string>
+    <string name="emg_lv01_msg01">열경련이나 열실신의 가벼운 온열 질환이 의심됩니다.</string>
     <string name="emg_lv01_text02">더운 날씨에 너무 오래 야외에 있으신건 아닌가요? 일사병이 발생 할 수 있으니 조금 쉬시는걸 추천합니다</string>
+    <string name="emg_lv01_msg02">다소 오랜 시간 고온에 노출되어 일사병이 의심됩니다.</string>
     <string name="emg_lv01_text03">외부 환경과 신체지수가 많이 위험해 보입니다. 열사병의 위험이 있으니 조심하셔야 합니다!</string>
+    <string name="emg_lv01_msg03">체온이 낮고 오랜 기간 고온에 노출되어 열사병이 의심됩니다.</string>
 
     <string name="emg_lv02_text">현 상황에서 특이사항 없음</string>
     <string name="emg_lv02_text00">지금 처럼 쉬어주면 온열 질환을 예방할 수 있습니다</string>

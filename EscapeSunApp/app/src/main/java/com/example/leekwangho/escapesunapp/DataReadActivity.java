@@ -36,7 +36,7 @@ public class DataReadActivity extends Activity {
     public static TextView heatScan_text01,heatScan_text02;
     private ImageButton callListBTN,bleBTN,refreshBTN;
     private Button debugBTN;
-    private Switch alarm_distance,alarm_heart_rate,alarm_heat,alarm_humidity,service_switch,alarm_temperature,alarm_body_heat;
+    public static Switch alarm_distance,alarm_heart_rate,alarm_heat,alarm_humidity,service_switch,alarm_temperature,alarm_body_heat;
     private Intent serviceIntent = null;
     private SharedPreferenceUtil sharedPreferenceUtil;
     public static boolean IsActivityRun = false;
