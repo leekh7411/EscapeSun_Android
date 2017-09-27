@@ -641,7 +641,7 @@ public class MainServiceThread extends Thread {
         }
 
         @Override
-        protected void onProgressUpdate(Integer... params) {
+        protected void onProgressUpdate(Integer... params){
 
         }
 
