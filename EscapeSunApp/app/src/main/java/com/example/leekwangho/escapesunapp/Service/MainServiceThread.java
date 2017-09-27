@@ -66,7 +66,7 @@ public class MainServiceThread extends Thread {
     private BluetoothDevice mDevice = null;
     private int mStatus;
     private boolean SensorReadThreadFlag = false;
-    public static boolean IsEmergencyMessageSend = true;
+    public static boolean IsEmergencyMessageSend = false;
     private final String TAG = "MainService_thread";
     private boolean IsRun = false;
     private boolean IsShowNotification = false;
@@ -127,11 +127,11 @@ public class MainServiceThread extends Thread {
             while(IsRun){
                 sleep(1000);
                 // TODO: 2017-09-15 Send Emergency SMS here!
-                if(IsEmergencyMessageSend){
+                /*if(IsEmergencyMessageSend){
                     if(gps_manager.myLocation != null){
                         SendEmergencyMessage();
                     }
-                }
+                }*/
 
                 // TODO: 2017-09-16 모드 변경 시 여기서 블루투스로 설정 값 전달!
                 BleSendCheck();
@@ -247,10 +247,12 @@ public class MainServiceThread extends Thread {
             BLEWriteData(LIMIT_HUMIDITY,(byte)0);
         }
         if(IsTemperatureOFF){
+            IsTemperatureOFF = false;
             try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData(LIMIT_TEMPERATURE,(byte)0);
         }
         if(IsBodyHeatOFF){
+            IsBodyHeatOFF = false;
             try{sleep(300);}catch (Exception e){e.printStackTrace();}
             BLEWriteData(LIMIT_BODY_HEAT,(byte)0);
         }
@@ -277,9 +279,11 @@ public class MainServiceThread extends Thread {
         if(items != null){
             // Test 해야함
             for(int i = 0 ; i < items.size(); i++){
-                try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
+                try{Thread.sleep(1000);}catch (Exception e){e.printStackTrace();}
                 try {
+
                     if(Level_01 < 0 || Level_01 > 2){
+                        Log.d("MSG",items.get(i).getPhone_number() + " 전송");
                         messenger.Send_MMS_To(
                                 items.get(i).getPhone_number(),
                                 ""
@@ -291,6 +295,7 @@ public class MainServiceThread extends Thread {
                                         + " 즉시 도움 부탁드립니다!"
                         );
                     }else{
+                        Log.d("MSG",items.get(i).getPhone_number() + " 전송");
                         messenger.Send_MMS_To(
                                 items.get(i).getPhone_number(),
                                 ""
@@ -305,8 +310,10 @@ public class MainServiceThread extends Thread {
                     }
 
                 }catch (Exception e){e.printStackTrace();}
-                try{Thread.sleep(500);}catch (Exception e){e.printStackTrace();}
+                try{Thread.sleep(1000);}catch (Exception e){e.printStackTrace();}
             }
+        }else{
+            Log.d("MSG","전화번호부가 null");
         }
     }
 
@@ -430,6 +437,7 @@ public class MainServiceThread extends Thread {
                         case 1:{
                             IsShowNotification = true;
                             String msg = mContext.getResources().getString(R.string.emg_lv01_text01);
+                            Log.d("MSG",msg);
                             //DataReadActivity.heatScan_text01.setText(msg);
                             SetTextView(msg,-1,DataReadActivity.heatScan_text01);
                             break;
@@ -437,13 +445,16 @@ public class MainServiceThread extends Thread {
                         case 2:{
                             IsShowNotification = true;
                             String msg = mContext.getResources().getString(R.string.emg_lv01_text02);
+                            Log.d("MSG",msg);
                             //DataReadActivity.heatScan_text01.setText(msg);
                             SetTextView(msg,-1,DataReadActivity.heatScan_text01);
                             break;
                         }
                         case 3:{
+
                             IsShowNotification = true;
                             String msg = mContext.getResources().getString(R.string.emg_lv01_text03);
+                            Log.d("MSG",msg);
                             //DataReadActivity.heatScan_text01.setText(msg);
                             SetTextView(msg,-1,DataReadActivity.heatScan_text01);
                             break;
@@ -459,15 +470,20 @@ public class MainServiceThread extends Thread {
                             break;
                         }
                         case 1:{
+
                             IsShowNotification = true;
                             String msg = mContext.getResources().getString(R.string.emg_lv02_text01);
                             //DataReadActivity.heatScan_text02.setText(msg);
+                            Log.d("MSG",msg);
                             SetTextView(msg,-1,DataReadActivity.heatScan_text02);
                             break;
                         }
                         case 2:{
+
                             IsShowNotification = true;
                             String msg = mContext.getResources().getString(R.string.emg_lv02_text02);
+
+                            Log.d("MSG",msg);
                             //DataReadActivity.heatScan_text02.setText(msg);
                             SetTextView(msg,-1,DataReadActivity.heatScan_text02);
                             break;
@@ -475,23 +491,25 @@ public class MainServiceThread extends Thread {
                         case 3:{
                             IsShowNotification = true;
                             String msg = mContext.getResources().getString(R.string.emg_lv02_text03);
+                            Log.d("MSG",msg);
                             //DataReadActivity.heatScan_text02.setText(msg);
                             SetTextView(msg,-1,DataReadActivity.heatScan_text02);
                             // TODO: 2017-09-18 긴급 상황 문자 전송 여기서!
-                            IsEmergencyMessageSend = true;
-                            try{Thread.sleep(400);}catch (Exception e){e.printStackTrace();}
-                            BLEWriteData(EMERGENCY,(byte)(val-10));
-                            try{Thread.sleep(400);}catch (Exception e){e.printStackTrace();}
+
+                            if(!IsEmergencyMessageSend && gps_manager.myLocation != null){
+                                SendEmergencyMessage();
+                                IsEmergencyMessageSend = true;
+                            }
                             break;
                         }
                     }
 
                     //Notification(Test)
-                    if(level01 >= 0 && level01 < 4 && level02 >= 0 && level02 < 4 && IsShowNotification){
+                    if(level01 > 0 && level01 < 4 && level02 > 0 && level02 < 4 && IsShowNotification){
                         ShowNotification(
                                 Noti_Messages01.get(level01),
                                 Noti_Messages02.get(level02),
-                                0
+                                (level01 * 10 + level02)
                         );
                         IsShowNotification = false;
                     }

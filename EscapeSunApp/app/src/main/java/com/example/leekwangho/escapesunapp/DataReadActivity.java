@@ -183,6 +183,8 @@ public class DataReadActivity extends Activity {
 
                 }else{
                     sharedPreferenceUtil.setData("humidity","off");
+                    sharedPreferenceUtil.setData("Is_humidity_value","0");
+                    MainServiceThread.IsDistanceOFF = true;
                     MainServiceThread.IsHumidityOFF = true;
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
@@ -216,6 +218,7 @@ public class DataReadActivity extends Activity {
                     }
                 }else{
                     sharedPreferenceUtil.setData("temperature","off");
+                    sharedPreferenceUtil.setData("Is_temperature_value","0");
                     MainServiceThread.IsTemperatureOFF = true;
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
@@ -235,6 +238,7 @@ public class DataReadActivity extends Activity {
                     }
                 }else{
                     sharedPreferenceUtil.setData("body_heat","off");
+                    sharedPreferenceUtil.setData("Is_body_heat_value","0");
                     MainServiceThread.IsBodyHeatOFF = true;
                     Toast.makeText(getApplicationContext(),"OFF",Toast.LENGTH_SHORT).show();
                 }
