@@ -92,7 +92,7 @@ public class SensorChart {
             // Gets the layout params that will allow you to resize the layout
             ViewGroup.LayoutParams params = backLayout.getLayoutParams();
             // Changes the height and width to the specified *pixels*
-            int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 450, mActivty.getResources().getDisplayMetrics());
+            int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 550, mActivty.getResources().getDisplayMetrics());
             params.height = height;
             backLayout.setLayoutParams(params);
         }else{

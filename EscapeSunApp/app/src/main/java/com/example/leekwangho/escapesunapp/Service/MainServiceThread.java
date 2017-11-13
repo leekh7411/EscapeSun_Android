@@ -126,13 +126,6 @@ public class MainServiceThread extends Thread {
             StartSensorReadThread();
             while(IsRun){
                 sleep(1000);
-                // TODO: 2017-09-15 Send Emergency SMS here!
-                /*if(IsEmergencyMessageSend){
-                    if(gps_manager.myLocation != null){
-                        SendEmergencyMessage();
-                    }
-                }*/
-
                 // TODO: 2017-09-16 모드 변경 시 여기서 블루투스로 설정 값 전달!
                 BleSendCheck();
 
@@ -270,7 +263,7 @@ public class MainServiceThread extends Thread {
     }
 
     private void SendEmergencyMessage(){
-        IsEmergencyMessageSend = false;
+
         ArrayList<CallListItem> items = new ArrayList<>();
         if(mainDBHelper != null){
             items = mainDBHelper.__callList_get_all_data_ArrayList();
@@ -464,6 +457,7 @@ public class MainServiceThread extends Thread {
                     switch (level02){
                         case 0:{
                             IsShowNotification = true;
+                            IsEmergencyMessageSend = false;
                             String msg = mContext.getResources().getString(R.string.emg_lv02_text00);
                             //DataReadActivity.heatScan_text02.setText(msg);
                             SetTextView(msg,-1,DataReadActivity.heatScan_text02);
@@ -472,6 +466,7 @@ public class MainServiceThread extends Thread {
                         case 1:{
 
                             IsShowNotification = true;
+                            IsEmergencyMessageSend = false;
                             String msg = mContext.getResources().getString(R.string.emg_lv02_text01);
                             //DataReadActivity.heatScan_text02.setText(msg);
                             Log.d("MSG",msg);
@@ -481,6 +476,7 @@ public class MainServiceThread extends Thread {
                         case 2:{
 
                             IsShowNotification = true;
+                            IsEmergencyMessageSend = false;
                             String msg = mContext.getResources().getString(R.string.emg_lv02_text02);
 
                             Log.d("MSG",msg);
@@ -667,7 +663,7 @@ public class MainServiceThread extends Thread {
         protected void onPostExecute(Integer result){
             super.onPostExecute(result);
             if(TAG.equals("DISTANCE")){
-                sensor.setText("설정된 값 없음, 누적 이동거리 : " + (float)(value * 0.8) + "(M)");
+                sensor.setText("지금까지 누적 이동거리 : " + (float)(value * 0.8) + "(M)");
             }else{
                 if(value == -1)sensor.setText(TAG);
                 else sensor.setText(TAG + value);

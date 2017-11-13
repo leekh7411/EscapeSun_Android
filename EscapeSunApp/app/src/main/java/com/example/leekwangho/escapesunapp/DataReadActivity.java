@@ -43,6 +43,7 @@ public class DataReadActivity extends Activity {
     public static ArrayList<Entry> sensorChartDatas01;
     public static Activity mActivity;
     public static SensorChart sensorChart;
+    private LinearLayout alarmHeatDataSet;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +98,7 @@ public class DataReadActivity extends Activity {
         heatScan_text02 = findViewById(R.id.alarm_heat_text02);
         sensorChart = new SensorChart(mActivity,R.id.sensor_chart,R.id.SensorCharts);
         sensorChart.AddEntry(10,10,10,10,10);
+        alarmHeatDataSet = (LinearLayout)findViewById(R.id.SensorDataDisplay);
 
         // Switch
         if(sharedPreferenceUtil.getData("Is_distance_value").equals("null"))sharedPreferenceUtil.setData("Is_distance_value","0");
@@ -159,6 +161,7 @@ public class DataReadActivity extends Activity {
                     MainServiceThread.IsHeatScanOn = true;
                     Toast.makeText(getApplicationContext(),"Heat scan ON",Toast.LENGTH_SHORT).show();
                     sensorChart.setVisible(true);
+                    alarmHeatDataSet.setVisibility(View.VISIBLE);
                 }else{
                     sharedPreferenceUtil.setData("heat","off");
                     MainServiceThread.IsHeatScanOFF = true;
@@ -166,6 +169,7 @@ public class DataReadActivity extends Activity {
                     heatScan_text01.setText(getResources().getString(R.string.emg_lv01_text));
                     heatScan_text02.setText(getResources().getString(R.string.emg_lv02_text));
                     sensorChart.setVisible(false);
+                    alarmHeatDataSet.setVisibility(View.INVISIBLE);
                 }
             }
         });
